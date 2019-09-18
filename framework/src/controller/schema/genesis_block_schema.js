@@ -35,6 +35,14 @@ module.exports = {
 			type: 'integer',
 			minimum: 0,
 		},
+		maxHeightPreviouslyForged: {
+			type: 'integer',
+			minimum: 0,
+		},
+		prevotedConfirmedUptoHeight: {
+			type: 'integer',
+			minimum: 0,
+		},
 		totalAmount: {
 			type: 'string',
 			format: 'amount',
@@ -119,6 +127,12 @@ module.exports = {
 					signature: {
 						type: 'string',
 						format: 'signature',
+					},
+					signatures: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
 					},
 					id: {
 						type: 'string',

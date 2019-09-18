@@ -21,23 +21,23 @@ const accounts = {};
 
 // Existing delegate account
 accounts.existingDelegate = {
-	address: '10881167371402274308L',
-	publicKey: 'addb0e15a44b0fdc6ff291be28d8c98f5551d0cd9218d749e30ddb87c6e31ca9',
+	address: '11045666510866467680L',
+	publicKey: 'e73c40e7a5470cfdfada5ef4eba84e48a400ac617e588369194f010288242b25',
 	passphrase:
-		'actress route auction pudding shiver crater forum liquid blouse imitate seven front',
+		'switch left awkward churn victory owner dress oil cat cactus slush surround',
 	balance: '0',
 	delegateName: 'genesis_100',
 };
 
 // Genesis account, initially holding 100M total supply
 accounts.genesis = {
-	address: '16313739661670634666L',
-	publicKey: 'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+	address: '16172183803052839181L',
+	publicKey: '862ca5c8fbc59d42a4dd76a0d883e00545cd42a56616810f90abdc6c19757a1f',
 	passphrase:
-		'wagon stock borrow episode laundry kitten salute link globe zero feed marble',
+		'peasant syrup tragic celery pupil attitude rough series mandate increase floor above',
 	balance: '10000000000000000',
 	encryptedPassphrase:
-		'iterations=1&salt=e8c7dae4c893e458e0ebb8bff9a36d84&cipherText=c0fab123d83c386ffacef9a171b6e0e0e9d913e58b7972df8e5ef358afbc65f99c9a2b6fe7716f708166ed72f59f007d2f96a91f48f0428dd51d7c9962e0c6a5fc27ca0722038f1f2cf16333&iv=1a2206e426c714091b7e48f6&tag=3a9d9f9f9a92c9a58296b8df64820c15&version=1',
+		'iterations=1&cipherText=0ed7ba9e846f85483f584e0c663289174cb818440a5456b563deb5a04749f96ff1de711e22c910aba317b8ac9d42a7981eda2ffc803b2e32acefdbddcfcb2d87916006e8595ecf41b4d86b3a1bfed75013cecffa&iv=2d2bc2307cd96f351525db96&salt=fcdfeae4bf08eaa69ab3ce65a3000872&tag=6aaa8c9363f6b2202222c87367ca2136&version=1',
 	password: 'elephant tree paris dragon chair galaxy',
 };
 
