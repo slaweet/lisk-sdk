@@ -21,23 +21,23 @@ const accounts = {};
 
 // Existing delegate account
 accounts.existingDelegate = {
-	address: '11045666510866467680L',
-	publicKey: 'e73c40e7a5470cfdfada5ef4eba84e48a400ac617e588369194f010288242b25',
+	address: '7917418729031818208L',
+	publicKey: '6fdfafcd8206c179d351baac5dc104a5ff46453e9d7f27f3e28ef38fc93d7799',
 	passphrase:
-		'switch left awkward churn victory owner dress oil cat cactus slush surround',
+		'honey lady pepper arch cluster uncover empty toss usual correct boil clay',
 	balance: '0',
 	delegateName: 'genesis_100',
 };
 
 // Genesis account, initially holding 100M total supply
 accounts.genesis = {
-	address: '16172183803052839181L',
-	publicKey: '862ca5c8fbc59d42a4dd76a0d883e00545cd42a56616810f90abdc6c19757a1f',
+	address: '11036225455433466506L',
+	publicKey: 'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
 	passphrase:
-		'peasant syrup tragic celery pupil attitude rough series mandate increase floor above',
+		'amazing rose void lion bamboo maid electric involve feed way popular actor',
 	balance: '10000000000000000',
 	encryptedPassphrase:
-		'iterations=1&cipherText=0ed7ba9e846f85483f584e0c663289174cb818440a5456b563deb5a04749f96ff1de711e22c910aba317b8ac9d42a7981eda2ffc803b2e32acefdbddcfcb2d87916006e8595ecf41b4d86b3a1bfed75013cecffa&iv=2d2bc2307cd96f351525db96&salt=fcdfeae4bf08eaa69ab3ce65a3000872&tag=6aaa8c9363f6b2202222c87367ca2136&version=1',
+		'iterations=1&cipherText=efd726ad67973f374caeda0f715571974789b99e70aa961129f295aa8e4c8d0bb39e321402fbcc126e8bf8630e17c13c4743702cd10343777ba17e443b7d444a76560538030e459afb3e&iv=8654394f37d831abdc5181be&salt=bbeee4479ae011704151acb23f0a889d&tag=44a42e50eb8bdc183fe68161856055b1&version=1',
 	password: 'elephant tree paris dragon chair galaxy',
 };
 
