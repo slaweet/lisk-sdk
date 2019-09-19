@@ -372,7 +372,7 @@ const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () 
 		{
 			address: '11036225455433466506L',
 			publicKey:
-				'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+				'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
 			secondPublicKey: null,
 			username: null,
 			isDelegate: false,
@@ -406,9 +406,10 @@ const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () 
 			rank: 70,
 			fees: 0,
 			rewards: 0,
-			vote: '9999899990000000',
+			vote: '10000000000000000',
 			productivity: 0,
 		},
+		...genesisDelegateAccounts,
 	];
 
 	const accountsForUnvote = {
@@ -416,12 +417,12 @@ const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () 
 		genesis: {
 			address: '11036225455433466506L',
 			publicKey:
-				'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+				'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
 			passphrase:
-				'wagon stock borrow episode laundry kitten salute link globe zero feed marble',
+				'amazing rose void lion bamboo maid electric involve feed way popular actor',
 			balance: '10000000000000000',
 			encryptedPassphrase:
-				'iterations=1&salt=e8c7dae4c893e458e0ebb8bff9a36d84&cipherText=c0fab123d83c386ffacef9a171b6e0e0e9d913e58b7972df8e5ef358afbc65f99c9a2b6fe7716f708166ed72f59f007d2f96a91f48f0428dd51d7c9962e0c6a5fc27ca0722038f1f2cf16333&iv=1a2206e426c714091b7e48f6&tag=3a9d9f9f9a92c9a58296b8df64820c15&version=1',
+				'iterations=1&cipherText=efd726ad67973f374caeda0f715571974789b99e70aa961129f295aa8e4c8d0bb39e321402fbcc126e8bf8630e17c13c4743702cd10343777ba17e443b7d444a76560538030e459afb3e&iv=8654394f37d831abdc5181be&salt=bbeee4479ae011704151acb23f0a889d&tag=44a42e50eb8bdc183fe68161856055b1&version=1',
 			password: 'elephant tree paris dragon chair galaxy',
 		},
 		aDelegate: {
