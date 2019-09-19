@@ -23,6 +23,10 @@ Object {
       "minLength": 1,
       "type": "string",
     },
+    "maxHeightPreviouslyForged": Object {
+      "minimum": 0,
+      "type": "integer",
+    },
     "numberOfTransactions": Object {
       "minimum": 0,
       "type": "integer",
@@ -43,6 +47,10 @@ Object {
         "null",
         "string",
       ],
+    },
+    "prevotedConfirmedUptoHeight": Object {
+      "minimum": 0,
+      "type": "integer",
     },
     "reward": Object {
       "format": "amount",
@@ -104,6 +112,12 @@ Object {
           "signature": Object {
             "format": "signature",
             "type": "string",
+          },
+          "signatures": Object {
+            "items": Object {
+              "type": "string",
+            },
+            "type": "array",
           },
           "timestamp": Object {
             "min": 0,

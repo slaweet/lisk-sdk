@@ -33,9 +33,9 @@ const { genesisBlock } = defaultConfig;
 // TODO: Compute the initial account state here
 const initialAccountsState = [
 	{
-		address: '11036225455433466506L',
+		address: '2580432900309532760L',
 		publicKey:
-			'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
+			'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 		balance: '1000000000000',
 		secondSignature: 0,
 		isDelegate: 0,
@@ -59,14 +59,14 @@ const initialAccountsState = [
 const accounts = {
 	// Genesis account, initially holding 100M total supply
 	genesis: {
-		address: '11036225455433466506L',
+		address: '2580432900309532760L',
 		publicKey:
-			'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
+			'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 		passphrase:
-			'amazing rose void lion bamboo maid electric involve feed way popular actor',
+			'suit unhappy dad senior tell runway gloom glass creek easily amateur trim',
 		balance: '10000000000000000',
 		encryptedPassphrase:
-			'iterations=1&cipherText=efd726ad67973f374caeda0f715571974789b99e70aa961129f295aa8e4c8d0bb39e321402fbcc126e8bf8630e17c13c4743702cd10343777ba17e443b7d444a76560538030e459afb3e&iv=8654394f37d831abdc5181be&salt=bbeee4479ae011704151acb23f0a889d&tag=44a42e50eb8bdc183fe68161856055b1&version=1',
+			'iterations=10&cipherText=b526b08b7cc9418b69264381c01870761dfb782427e03561ae85ad857afa975a0fe336b158ddb3b78db50ade2a0059148d3643d295db69fe9afcda5f2dbeb76062103044ffeed98dae&iv=7f47271af2bdc67aa24d6a9d&salt=535b665a7c0cd4c7a8d14a897d1b151a&tag=6bd6e5bdc8fe4a324391eeb67af1f335&version=1',
 		password: 'elephant tree paris dragon chair galaxy',
 	},
 	votingAccount: {
@@ -125,13 +125,13 @@ const generateTestCasesValidBlockVotesTx = () => {
 
 		chainStateBuilder
 			.transfer('99')
-			.from('11036225455433466506L')
+			.from('2580432900309532760L')
 			.to(anAccount.address);
 	}
 	// Fund account that will issue votes
 	chainStateBuilder
 		.transfer('101')
-		.from('11036225455433466506L')
+		.from('2580432900309532760L')
 		.to('2222471382442610527L');
 
 	// Forge the block so as to have all delegates in the store
@@ -212,13 +212,13 @@ const generateTestCasesInvalidBlockTooManyVotesTx = () => {
 
 		chainStateBuilder
 			.transfer('99')
-			.from('11036225455433466506L')
+			.from('2580432900309532760L')
 			.to(anAccount.address);
 	}
 	// Fund account that will issue votes
 	chainStateBuilder
 		.transfer('101')
-		.from('11036225455433466506L')
+		.from('2580432900309532760L')
 		.to('2222471382442610527L');
 
 	// Forge the block so as to have all delegates in the store
@@ -271,13 +271,13 @@ const generateTestCasesInvalidBlockVoteNoDelegateTx = () => {
 
 		chainStateBuilder
 			.transfer('99')
-			.from('11036225455433466506L')
+			.from('2580432900309532760L')
 			.to(anAccount.address);
 	}
 	// Fund account that will issue votes
 	chainStateBuilder
 		.transfer('101')
-		.from('11036225455433466506L')
+		.from('2580432900309532760L')
 		.to('2222471382442610527L');
 
 	// Forge the block so as to have all delegates in the store
@@ -329,13 +329,13 @@ const generateTestCasesInvalidBlockVoteAlreadyVotedDelegateTx = () => {
 
 		chainStateBuilder
 			.transfer('99')
-			.from('11036225455433466506L')
+			.from('2580432900309532760L')
 			.to(anAccount.address);
 	}
 	// Fund account that will issue votes
 	chainStateBuilder
 		.transfer('101')
-		.from('11036225455433466506L')
+		.from('2580432900309532760L')
 		.to('2222471382442610527L');
 
 	// Forge the block so as to have all delegates in the store
@@ -370,9 +370,9 @@ const generateTestCasesInvalidBlockVoteAlreadyVotedDelegateTx = () => {
 const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () => {
 	const initialAccountsStateUnvote = [
 		{
-			address: '11036225455433466506L',
+			address: '2580432900309532760L',
 			publicKey:
-				'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
+				'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 			secondPublicKey: null,
 			username: null,
 			isDelegate: false,
@@ -390,7 +390,7 @@ const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () 
 			productivity: 0,
 		},
 		{
-			address: '7917418729031818208L',
+			address: '4779466276403361478L',
 			publicKey:
 				'addb0e15a44b0fdc6ff291be28d8c98f5551d0cd9218d749e30ddb87c6e31ca9',
 			secondPublicKey: null,
@@ -415,22 +415,22 @@ const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () 
 	const accountsForUnvote = {
 		// Genesis account, initially holding 100M total supply
 		genesis: {
-			address: '11036225455433466506L',
+			address: '2580432900309532760L',
 			publicKey:
-				'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
+				'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 			passphrase:
-				'amazing rose void lion bamboo maid electric involve feed way popular actor',
+				'suit unhappy dad senior tell runway gloom glass creek easily amateur trim',
 			balance: '10000000000000000',
 			encryptedPassphrase:
-				'iterations=1&cipherText=efd726ad67973f374caeda0f715571974789b99e70aa961129f295aa8e4c8d0bb39e321402fbcc126e8bf8630e17c13c4743702cd10343777ba17e443b7d444a76560538030e459afb3e&iv=8654394f37d831abdc5181be&salt=bbeee4479ae011704151acb23f0a889d&tag=44a42e50eb8bdc183fe68161856055b1&version=1',
+				'iterations=10&cipherText=b526b08b7cc9418b69264381c01870761dfb782427e03561ae85ad857afa975a0fe336b158ddb3b78db50ade2a0059148d3643d295db69fe9afcda5f2dbeb76062103044ffeed98dae&iv=7f47271af2bdc67aa24d6a9d&salt=535b665a7c0cd4c7a8d14a897d1b151a&tag=6bd6e5bdc8fe4a324391eeb67af1f335&version=1',
 			password: 'elephant tree paris dragon chair galaxy',
 		},
 		aDelegate: {
-			address: '7917418729031818208L',
+			address: '4779466276403361478L',
 			publicKey:
-				'6fdfafcd8206c179d351baac5dc104a5ff46453e9d7f27f3e28ef38fc93d7799',
+				'961cba94ea053793b965e97a208abbce8d98711bb993c03dde7901262b44272b',
 			passphrase:
-				'honey lady pepper arch cluster uncover empty toss usual correct boil clay',
+				'clown casino range cruel occur van absorb smoke punch mixture photo relief',
 			balance: '0',
 			delegateName: 'genesis_100',
 		},
@@ -455,13 +455,13 @@ const generateTestCasesInvalidBlockWithUnvoteForDelegateNotPreviouslyVoted = () 
 	// Give balance from genesis account to delegates just for having account states to compare against
 	chainStateBuilder
 		.transfer('10')
-		.from('11036225455433466506L')
-		.to('7917418729031818208L');
+		.from('2580432900309532760L')
+		.to('4779466276403361478L');
 
 	// Fund account that will issue votes
 	chainStateBuilder
 		.transfer('10')
-		.from('11036225455433466506L')
+		.from('2580432900309532760L')
 		.to('2222471382442610527L');
 
 	// Forge the block so as to have all delegates in the store

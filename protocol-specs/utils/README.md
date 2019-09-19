@@ -25,8 +25,8 @@ Transfer Lisk:
 ```javascript
 chainStateBuilder
 	.transfer('50')
-	.from('11036225455433466506L')
-	.to('7917418729031818208L')
+	.from('2580432900309532760L')
+	.to('4779466276403361478L')
 	.forge();
 ```
 
@@ -79,7 +79,7 @@ chainStateBuilder
 chainStateBuilder
 	.transfer('7')
 	.from('2222471382442610527L')
-	.to('7917418729031818208L');
+	.to('4779466276403361478L');
 
 // Attention! You need to sign the transactions inmmediatly after generating them
 chainStateBuilder
@@ -97,7 +97,7 @@ Forge invalid input block (for cases where the final block should not be include
 chainStateBuilder
 	.transfer('0.5')
 	.from('2222471382442610527L')
-	.to('7917418729031818208L')
+	.to('4779466276403361478L')
 	.transfer('0.5')
 	.from('2222471382442610527L')
 	.to('11325618463998518034L')
@@ -109,10 +109,10 @@ Calls can also be chained:
 ```javascript
 chainStateBuilder
 	.transfer('50')
-	.from('11036225455433466506L')
-	.to('7917418729031818208L')
+	.from('2580432900309532760L')
+	.to('4779466276403361478L')
 	.transfer('20')
-	.from('7917418729031818208L')
+	.from('4779466276403361478L')
 	.to('22313731441670634663L')
 	.forge();
 ```
