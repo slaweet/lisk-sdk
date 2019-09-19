@@ -172,7 +172,7 @@ describe('POST /api/transactions (type 0) transfer funds', () => {
 				);
 				expect(res.body.code).to.be.eql(apiCodes.PROCESSING_ERROR);
 				expect(res.body.errors[0].message).to.include(
-					'Account does not have enough LSK: 16313739661670634666L, balance: ',
+					'Account does not have enough LSK: 4779466276403361478L, balance: ',
 				);
 				badTransactions.push(transaction);
 			});

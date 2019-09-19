@@ -434,7 +434,7 @@ describe('GET /api/transactions', () => {
 					expect(res.body.data).to.not.empty;
 					// Skip Genesis vote transaction - exception as it contains 101 votes
 					const transactionsType3 = res.body.data.filter(
-						transaction => transaction.recipientId !== '16313739661670634666L',
+						transaction => transaction.recipientId !== '4779466276403361478L',
 					);
 					expect(transactionsType3.length).to.be.above(0);
 					transactionsType3.map(transaction => {

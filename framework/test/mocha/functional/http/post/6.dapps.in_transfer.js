@@ -395,7 +395,7 @@ describe.skip('POST /api/transactions (type 6) inTransfer dapp', () => {
 				amount: '100000000',
 				recipientId: '',
 				senderPublicKey:
-					'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+					'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 				timestamp: 60731530,
 				type: 6,
 				fee: '10000000',

@@ -523,7 +523,7 @@ describe('blocks/verify', () => {
 						passphrase: accountFixtures.genesis.passphrase,
 						recipientId: account.address,
 					});
-					transaction.senderId = '16313739661670634666L';
+					transaction.senderId = '4779466276403361478L';
 
 					const createBlockPayload = async (
 						passPhrase,

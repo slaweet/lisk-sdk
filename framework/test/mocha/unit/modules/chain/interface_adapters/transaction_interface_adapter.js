@@ -77,7 +77,7 @@ describe('transactions', () => {
 					timestamp: 54196076,
 					asset: {},
 					senderPublicKey:
-						'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+						'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 					signature:
 						'1518a69983e348359f62a8e740f6f5f08c0c3cad651e5116bf991bc5a4b4cfb8bf8c033a86e30f596fac80142df5a4121400ac2e9307614a143ffd75cc07c20b',
 					id: '7507990258936015021',
@@ -95,7 +95,7 @@ describe('transactions', () => {
 					fee: '500000000',
 					recipientId: '',
 					senderPublicKey:
-						'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+						'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 					timestamp: 54316324,
 					asset: {
 						signature: {
@@ -120,13 +120,13 @@ describe('transactions', () => {
 					fee: '2500000000',
 					recipientId: '',
 					senderPublicKey:
-						'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+						'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 					timestamp: 54196076,
 					asset: {
 						delegate: {
 							username: 'RLI0',
 							publicKey:
-								'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+								'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 						},
 					},
 					signature:
@@ -144,9 +144,9 @@ describe('transactions', () => {
 					type: 3,
 					amount: '0',
 					fee: '100000000',
-					recipientId: '16313739661670634666L',
+					recipientId: '4779466276403361478L',
 					senderPublicKey:
-						'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+						'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 					timestamp: 54196078,
 					asset: {
 						votes: [
@@ -172,7 +172,7 @@ describe('transactions', () => {
 					fee: '3000000000',
 					recipientId: '',
 					senderPublicKey:
-						'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+						'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
 					timestamp: 54196078,
 					asset: {
 						multisignature: {
