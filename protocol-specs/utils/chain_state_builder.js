@@ -345,7 +345,7 @@ class ChainStateBuilder {
 
 		if (!sender) {
 			throw new Error(
-				'Sender does not exists so it would not be possible to transfer from this account. Check the values passed to the constructor',
+				`Sender does not exists so it would not be possible to transfer from this account. Check the values passed to the constructor ${from}`,
 			);
 		}
 

@@ -24,44 +24,41 @@ const { genesisBlock } = defaultConfig;
 // TODO: Compute the initial account state here
 const initialAccountsState = [
 	{
-		address: '16313739661670634666L',
+		address: '11036225455433466506L',
 		publicKey:
-			'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
-		secondPublicKey: null,
-		username: null,
-		isDelegate: false,
-		secondSignature: false,
-		balance: 9999899990000000,
-		multiMin: 0,
-		multiLifetime: 0,
-		nameExist: false,
-		missedBlocks: 0,
+			'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
+		balance: '1000000000000',
+		secondSignature: 0,
+		isDelegate: 0,
+		vote: '0',
+		multimin: 0,
+		multilifetime: 0,
+		nameexist: 0,
 		producedBlocks: 0,
-		rank: null,
-		fees: 0,
-		rewards: 0,
-		vote: 0,
-		productivity: 0,
+		missedBlocks: 0,
+		fees: '0',
+		rewards: '0',
+		asset: {},
+		voteWeight: '0',
 	},
 	{
-		address: '10881167371402274308L',
-		publicKey:
-			'addb0e15a44b0fdc6ff291be28d8c98f5551d0cd9218d749e30ddb87c6e31ca9',
-		secondPublicKey: null,
 		username: 'genesis_100',
-		isDelegate: true,
-		secondSignature: false,
-		balance: 0,
-		multiMin: 0,
-		multiLifetime: 0,
-		nameExist: false,
-		missedBlocks: 1,
+		isDelegate: 1,
+		secondSignature: 0,
+		address: '7917418729031818208L',
+		publicKey:
+			'6fdfafcd8206c179d351baac5dc104a5ff46453e9d7f27f3e28ef38fc93d7799',
+		balance: '0',
+		vote: '0',
+		multimin: 0,
+		multilifetime: 0,
+		nameexist: 0,
 		producedBlocks: 0,
-		rank: 70,
-		fees: 0,
-		rewards: 0,
-		vote: 9999899990000000,
-		productivity: 0,
+		missedBlocks: 0,
+		fees: '0',
+		rewards: '0',
+		asset: {},
+		voteWeight: '1000000000000',
 	},
 ];
 
@@ -71,22 +68,22 @@ const initialAccountsState = [
 const accounts = {
 	// Genesis account, initially holding 100M total supply
 	genesis: {
-		address: '16313739661670634666L',
+		address: '11036225455433466506L',
 		publicKey:
-			'c094ebee7ec0c50ebee32918655e089f6e1a604b83bcaa760293c61e0f18ab6f',
+			'd13a2659f908146f099da29216a18fd7f845b4e1455087b1a4bced79b6fefadf',
 		passphrase:
-			'wagon stock borrow episode laundry kitten salute link globe zero feed marble',
+			'amazing rose void lion bamboo maid electric involve feed way popular actor',
 		balance: '10000000000000000',
 		encryptedPassphrase:
-			'iterations=1&salt=e8c7dae4c893e458e0ebb8bff9a36d84&cipherText=c0fab123d83c386ffacef9a171b6e0e0e9d913e58b7972df8e5ef358afbc65f99c9a2b6fe7716f708166ed72f59f007d2f96a91f48f0428dd51d7c9962e0c6a5fc27ca0722038f1f2cf16333&iv=1a2206e426c714091b7e48f6&tag=3a9d9f9f9a92c9a58296b8df64820c15&version=1',
+			'iterations=1&cipherText=efd726ad67973f374caeda0f715571974789b99e70aa961129f295aa8e4c8d0bb39e321402fbcc126e8bf8630e17c13c4743702cd10343777ba17e443b7d444a76560538030e459afb3e&iv=8654394f37d831abdc5181be&salt=bbeee4479ae011704151acb23f0a889d&tag=44a42e50eb8bdc183fe68161856055b1&version=1',
 		password: 'elephant tree paris dragon chair galaxy',
 	},
 	existingDelegate: {
-		address: '10881167371402274308L',
+		address: '7917418729031818208L',
 		publicKey:
-			'addb0e15a44b0fdc6ff291be28d8c98f5551d0cd9218d749e30ddb87c6e31ca9',
+			'6fdfafcd8206c179d351baac5dc104a5ff46453e9d7f27f3e28ef38fc93d7799',
 		passphrase:
-			'actress route auction pudding shiver crater forum liquid blouse imitate seven front',
+			'honey lady pepper arch cluster uncover empty toss usual correct boil clay',
 		balance: '0',
 		delegateName: 'genesis_100',
 	},
@@ -111,13 +108,13 @@ const generateTestCasesValidBlockDelegateRegistration = () => {
 
 	chainStateBuilder
 		.transfer('50')
-		.from('16313739661670634666L')
-		.to('10881167371402274308L')
+		.from('11036225455433466506L')
+		.to('7917418729031818208L')
 		.forge();
 
 	chainStateBuilder
 		.transfer('30')
-		.from('10881167371402274308L')
+		.from('7917418729031818208L')
 		.to('2222471382442610527L')
 		.forge();
 
@@ -150,13 +147,13 @@ const generateTestCasesInvalidBlockDelegateRegistrationSecondTime = () => {
 
 	chainStateBuilder
 		.transfer('50')
-		.from('16313739661670634666L')
-		.to('10881167371402274308L')
+		.from('11036225455433466506L')
+		.to('7917418729031818208L')
 		.forge();
 
 	chainStateBuilder
 		.transfer('30')
-		.from('10881167371402274308L')
+		.from('7917418729031818208L')
 		.to('2222471382442610527L')
 		.forge();
 
@@ -194,13 +191,13 @@ const generateTestCasesInvalidBlockDelegateRegistrationForbiddenName = () => {
 
 	chainStateBuilder
 		.transfer('50')
-		.from('16313739661670634666L')
-		.to('10881167371402274308L')
+		.from('11036225455433466506L')
+		.to('7917418729031818208L')
 		.forge();
 
 	chainStateBuilder
 		.transfer('30')
-		.from('10881167371402274308L')
+		.from('7917418729031818208L')
 		.to('2222471382442610527L')
 		.forge();
 
