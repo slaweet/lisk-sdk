@@ -48,7 +48,7 @@
 		},
 		"chain": {
 			"forging": {
-				"force": false,
+				"force": true,
 				"delegates": [
 					{
 						"encryptedPassphrase": "iterations=10&cipherText=1d3d12da68ddc4bc123eff7acc446f6bf1c74d0f5dcf53831eea4dfbef76e5415cd47ebed7cede0714f3f9960701f076e03842576a128e66f40ed43b45d7a85fb7f3b860c513ce0fab82e8b64a&iv=beb8032897b4112a30bce277&salt=e50c7fdb529a54e4828751a80ba287ab&tag=73ddfc642fbef64b4b3926cf9529918e&version=1",
