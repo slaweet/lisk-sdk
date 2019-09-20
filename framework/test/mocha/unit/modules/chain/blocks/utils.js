@@ -20,7 +20,7 @@ const blocksUtils = require('../../../../../../src/modules/chain/blocks/utils');
 
 describe('blocks/utils', () => {
 	const genesisBlock = {
-		id: '16035521652507125836',
+		id: '3110763447174287315',
 		height: 1,
 	};
 
@@ -190,7 +190,7 @@ describe('blocks/utils', () => {
 			expect(sequence).to.be.an('object');
 			expect(sequence.firstHeight).to.equal(1);
 			expect(sequence.ids).to.equal(
-				'15542731749098709272,1,2,3,4,16035521652507125836',
+				'15542731749098709272,1,2,3,4,3110763447174287315',
 			);
 		});
 
@@ -213,7 +213,7 @@ describe('blocks/utils', () => {
 
 		it('should not add genesis block to the set more than once', async () => {
 			storageStub.entities.Block.getFirstBlockIdOfLastRounds.resolves([
-				{ id: '16035521652507125836', height: 1 },
+				{ id: '3110763447174287315', height: 1 },
 			]);
 
 			const sequence = await blocksUtils.getIdSequence(
@@ -225,14 +225,12 @@ describe('blocks/utils', () => {
 			);
 			expect(sequence).to.be.an('object');
 			expect(sequence.firstHeight).to.equal(1);
-			expect(sequence.ids).to.equal(
-				'15542731749098709272,16035521652507125836',
-			);
+			expect(sequence.ids).to.equal('15542731749098709272,3110763447174287315');
 		});
 
 		it('should not add last block when it is undefined', async () => {
 			storageStub.entities.Block.getFirstBlockIdOfLastRounds.resolves([
-				{ id: '16035521652507125836', height: 1 },
+				{ id: '3110763447174287315', height: 1 },
 			]);
 
 			const sequence = await blocksUtils.getIdSequence(
@@ -244,7 +242,7 @@ describe('blocks/utils', () => {
 			);
 			expect(sequence).to.be.an('object');
 			expect(sequence.firstHeight).to.equal(1);
-			expect(sequence.ids).to.equal('16035521652507125836');
+			expect(sequence.ids).to.equal('3110763447174287315');
 		});
 
 		it('should not add last block to the set more than once', async () => {
@@ -261,9 +259,7 @@ describe('blocks/utils', () => {
 			);
 			expect(sequence).to.be.an('object');
 			expect(sequence.firstHeight).to.equal(1);
-			expect(sequence.ids).to.equal(
-				'15542731749098709272,16035521652507125836',
-			);
+			expect(sequence.ids).to.equal('15542731749098709272,3110763447174287315');
 		});
 
 		it('should not add resolved block to the set more than once', async () => {
@@ -282,7 +278,7 @@ describe('blocks/utils', () => {
 			expect(sequence).to.be.an('object');
 			expect(sequence.firstHeight).to.equal(1);
 			expect(sequence.ids).to.equal(
-				'15542731749098709272,2,16035521652507125836',
+				'15542731749098709272,2,3110763447174287315',
 			);
 		});
 	});

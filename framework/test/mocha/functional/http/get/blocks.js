@@ -35,7 +35,7 @@ describe('GET /blocks', () => {
 	// Testnet genesis block data
 	const block = {
 		blockHeight: 1,
-		id: '16035521652507125836',
+		id: '3110763447174287315',
 		generatorPublicKey:
 			'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 		totalAmount: 10000000000000000,
@@ -67,7 +67,7 @@ describe('GET /blocks', () => {
 			});
 
 			it('using genesisBlock id should return the result', async () => {
-				const id = '16035521652507125836';
+				const id = '3110763447174287315';
 
 				return blocksEndpoint.makeRequest({ blockId: id }, 200).then(res => {
 					expect(res.body.data[0].id).to.equal(id);

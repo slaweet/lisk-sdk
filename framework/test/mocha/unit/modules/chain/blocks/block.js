@@ -18,7 +18,7 @@ const blocksLogic = require('../../../../../../src/modules/chain/blocks/block');
 
 describe('blocks/utils', () => {
 	const genesisBlock = {
-		id: '16035521652507125836',
+		id: '3110763447174287315',
 		height: 1,
 	};
 
@@ -248,7 +248,7 @@ describe('blocks/utils', () => {
 		it('should generate fake signature for genesis block', async () => {
 			const genesisBlock_view_full_blocks_list = [
 				{
-					b_id: '16035521652507125836',
+					b_id: '3110763447174287315',
 					b_height: 1,
 					b_generatorPublicKey:
 						'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
@@ -260,7 +260,7 @@ describe('blocks/utils', () => {
 					b_version: 1,
 				},
 				{
-					b_id: '16035521652507125836',
+					b_id: '3110763447174287315',
 					b_height: 1,
 					b_generatorPublicKey:
 						'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
@@ -281,7 +281,7 @@ describe('blocks/utils', () => {
 
 			expect(blockObject).to.be.an('array');
 			expect(blockObject[0]).to.be.an('object');
-			expect(blockObject[0].id).to.equal('16035521652507125836');
+			expect(blockObject[0].id).to.equal('3110763447174287315');
 			return expect(blockObject[0].generationSignature).to.equal(
 				'0000000000000000000000000000000000000000000000000000000000000000',
 			);
