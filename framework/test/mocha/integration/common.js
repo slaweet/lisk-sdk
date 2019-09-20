@@ -75,8 +75,10 @@ async function createBlock(
 	transactions = transactions.map(transaction =>
 		library.modules.interfaceAdapters.transactions.fromJson(transaction),
 	);
-	// TODO Remove hardcoded values and use from BFT class
-	const block = await library.modules.processor.create({
+	// TODO: Remove hardcoded values and use from BFT class
+	// Also, remove hardcoded version 1
+	const blockProcessorV1 = library.modules.processor.processors[1];
+	const block = await blockProcessorV1.create.run({
 		blockReward: library.modules.blocks.blockReward,
 		keypair,
 		timestamp,
