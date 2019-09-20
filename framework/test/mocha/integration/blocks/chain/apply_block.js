@@ -244,10 +244,10 @@ describe('integration test (blocks) - chain/applyBlock', () => {
 							amount: '10000000000000000',
 							fee: 0,
 							timestamp: -3704634000,
-							recipientId: '4779466276403361478L',
+							recipientId: '4103804705971278554L',
 							senderId: '1085993630748340485L',
 							senderPublicKey:
-								'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+								'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 							signature:
 								'd8103d0ea2004c3dea8076a6a22c6db8bae95bc0db819240c77fc5335f32920e91b9f41f58b01fc86dfda11019c9fd1c6c3dcbab0a4e478e3c9186ff6090dc05',
 							id: '1465651642158264048',

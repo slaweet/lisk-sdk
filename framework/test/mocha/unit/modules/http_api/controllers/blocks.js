@@ -140,13 +140,13 @@ describe('blocks/api', () => {
 					_list(
 						{
 							generatorPublicKey:
-								'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
+								'0b3dc5a506e312bac462afc4fb34cdc3b19d1976a279930d15ae3c3516edd188',
 						},
 						async () => {
 							expect(
 								storageStub.entities.Block.get.args[0][0].generatorPublicKey,
 							).to.equal(
-								'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
+								'0b3dc5a506e312bac462afc4fb34cdc3b19d1976a279930d15ae3c3516edd188',
 							);
 							done();
 						},

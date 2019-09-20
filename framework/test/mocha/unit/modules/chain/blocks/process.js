@@ -551,7 +551,7 @@ describe.skip('blocks/process', () => {
 			isCleaning = sinonSandbox.stub().returns(false);
 			onProgress = sinonSandbox.stub();
 			loadedBlocks = [
-				{ id: '6524861224470851795', height: 1 },
+				{ id: '16035521652507125836', height: 1 },
 				{ id: '2', height: 2 },
 				{ id: '3', height: 3 },
 				{ id: '4', height: 4 },

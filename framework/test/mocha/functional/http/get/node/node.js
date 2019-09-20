@@ -32,9 +32,9 @@ describe('GET /node', () => {
 			});
 		});
 
-		it('should return a result containing nethash = "198f2b61a8eb95fbeed58b8216780b68f697f26b849acf00c8c93bb9b24f783d"', async () => {
+		it('should return a result containing nethash = "7f90170dd1ba443bed0505580ca2ad6ba30c6815b7594db0f72f958c021dc58b"', async () => {
 			return expect(constantsResponse.nethash).to.be.equal(
-				'198f2b61a8eb95fbeed58b8216780b68f697f26b849acf00c8c93bb9b24f783d',
+				'7f90170dd1ba443bed0505580ca2ad6ba30c6815b7594db0f72f958c021dc58b',
 			);
 		});
 

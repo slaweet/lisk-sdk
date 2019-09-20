@@ -276,7 +276,7 @@ describe('schema - custom formats', () => {
 
 		it('should return false for value > 64', function() {
 			const invalidLengthPublicKey =
-				'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8123';
+				'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b123';
 			return expect(
 				validator.validate(invalidLengthPublicKey, this.schema),
 			).to.equal(false);
@@ -284,7 +284,7 @@ describe('schema - custom formats', () => {
 
 		it('should return true for valid publicKey', function() {
 			const validPublicKey =
-				'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8';
+				'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b';
 			return expect(validator.validate(validPublicKey, this.schema)).to.equal(
 				true,
 			);

@@ -267,7 +267,7 @@ describe('blocks/verify', () => {
 			async.every(
 				[
 					'blocks WHERE height > 1',
-					'trs WHERE "blockId" != \'6524861224470851795\'',
+					'trs WHERE "blockId" != \'16035521652507125836\'',
 					"mem_accounts WHERE address IN ('2737453412992791987L', '2896019180726908125L')",
 				],
 				(table, seriesCb) => {
@@ -523,7 +523,7 @@ describe('blocks/verify', () => {
 						passphrase: accountFixtures.genesis.passphrase,
 						recipientId: account.address,
 					});
-					transaction.senderId = '4779466276403361478L';
+					transaction.senderId = '4103804705971278554L';
 
 					const createBlockPayload = async (
 						passPhrase,

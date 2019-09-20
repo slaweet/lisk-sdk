@@ -18,7 +18,7 @@ const blocksLogic = require('../../../../../../src/modules/chain/blocks/block');
 
 describe('blocks/utils', () => {
 	const genesisBlock = {
-		id: '6524861224470851795',
+		id: '16035521652507125836',
 		height: 1,
 	};
 
@@ -77,7 +77,7 @@ describe('blocks/utils', () => {
 		{
 			id: '13068833527549895884',
 			generatorPublicKey:
-				'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+				'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 			height: 3, // Block 1
 			version: 0,
 			transactions: [
@@ -104,7 +104,7 @@ describe('blocks/utils', () => {
 		{
 			id: '13068833527549895884',
 			generatorPublicKey:
-				'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+				'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 			height: 3, // Block 1
 			version: '0',
 			transactions: [
@@ -120,7 +120,7 @@ describe('blocks/utils', () => {
 		{
 			id: '7018883617995376402',
 			generatorPublicKey:
-				'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+				'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 			height: 4, // Block 2
 			version: '1',
 			transactions: [
@@ -136,7 +136,7 @@ describe('blocks/utils', () => {
 		{
 			id: '7018883617995376402',
 			generatorPublicKey:
-				'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+				'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 			height: 4, // Block 2
 			version: 1,
 			transactions: [
@@ -248,10 +248,10 @@ describe('blocks/utils', () => {
 		it('should generate fake signature for genesis block', async () => {
 			const genesisBlock_view_full_blocks_list = [
 				{
-					b_id: '6524861224470851795',
+					b_id: '16035521652507125836',
 					b_height: 1,
 					b_generatorPublicKey:
-						'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+						'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 					t_id: '1465651642158264047',
 					t_type: 0,
 					b_totalAmount: 100,
@@ -260,10 +260,10 @@ describe('blocks/utils', () => {
 					b_version: 1,
 				},
 				{
-					b_id: '6524861224470851795',
+					b_id: '16035521652507125836',
 					b_height: 1,
 					b_generatorPublicKey:
-						'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+						'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 					t_id: '3634383815892709956',
 					t_type: 2,
 					b_totalAmount: 100,
@@ -281,7 +281,7 @@ describe('blocks/utils', () => {
 
 			expect(blockObject).to.be.an('array');
 			expect(blockObject[0]).to.be.an('object');
-			expect(blockObject[0].id).to.equal('6524861224470851795');
+			expect(blockObject[0].id).to.equal('16035521652507125836');
 			return expect(blockObject[0].generationSignature).to.equal(
 				'0000000000000000000000000000000000000000000000000000000000000000',
 			);

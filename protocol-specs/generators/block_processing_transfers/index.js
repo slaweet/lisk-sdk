@@ -24,9 +24,9 @@ const { genesisBlock } = defaultConfig;
 // TODO: Compute the initial account state here
 const initialAccountsState = [
 	{
-		address: '2580432900309532760L',
+		address: '12451387766827060593L',
 		publicKey:
-			'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
+			'0b3dc5a506e312bac462afc4fb34cdc3b19d1976a279930d15ae3c3516edd188',
 		balance: '1000000000000',
 		secondSignature: 0,
 		isDelegate: 0,
@@ -45,9 +45,9 @@ const initialAccountsState = [
 		username: 'genesis_100',
 		isDelegate: 1,
 		secondSignature: 0,
-		address: '4779466276403361478L',
+		address: '4103804705971278554L',
 		publicKey:
-			'961cba94ea053793b965e97a208abbce8d98711bb993c03dde7901262b44272b',
+			'f834a69d7f017b649859ea85f0a0c649202a8fb4619afa96daed06fa5641746b',
 		balance: '0',
 		vote: '0',
 		multimin: 0,
@@ -68,22 +68,22 @@ const initialAccountsState = [
 const accounts = {
 	// Genesis account, initially holding 100M total supply
 	genesis: {
-		address: '2580432900309532760L',
+		address: '12451387766827060593L',
 		publicKey:
-			'6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5',
+			'0b3dc5a506e312bac462afc4fb34cdc3b19d1976a279930d15ae3c3516edd188',
 		passphrase:
-			'suit unhappy dad senior tell runway gloom glass creek easily amateur trim',
+			'bargain airport little hungry lake point need antique scout phrase team adjust',
 		balance: '10000000000000000',
 		encryptedPassphrase:
-			'iterations=10&cipherText=b526b08b7cc9418b69264381c01870761dfb782427e03561ae85ad857afa975a0fe336b158ddb3b78db50ade2a0059148d3643d295db69fe9afcda5f2dbeb76062103044ffeed98dae&iv=7f47271af2bdc67aa24d6a9d&salt=535b665a7c0cd4c7a8d14a897d1b151a&tag=6bd6e5bdc8fe4a324391eeb67af1f335&version=1',
+			'iterations=10&cipherText=a579bce90228ce05e9fcb19191c266bf5ff4b49bb78f94b0b80f166b3c5913e82e5aa0cb32ebd9fa9c09383a39dc6e0ce4b4d062815bec3023e207bb8088163f2fc481767e7100dd2e6635371ea9&iv=2ca3ad9581d0ae30085cf79d&salt=f411a5dcd61cde7a821d1df833e02f65&tag=42f278de8eaf61d8b377bb84eb1694ff&version=1',
 		password: 'elephant tree paris dragon chair galaxy',
 	},
 	account: {
-		address: '4779466276403361478L',
+		address: '4103804705971278554L',
 		publicKey:
-			'961cba94ea053793b965e97a208abbce8d98711bb993c03dde7901262b44272b',
+			'f834a69d7f017b649859ea85f0a0c649202a8fb4619afa96daed06fa5641746b',
 		passphrase:
-			'clown casino range cruel occur van absorb smoke punch mixture photo relief',
+			'predict magic rebuild much rapid barely tuna push senior install soup village',
 		balance: '0',
 		delegateName: 'genesis_100',
 	},
@@ -117,13 +117,13 @@ const generateTestCasesValidBlockTransferTx = () => {
 
 	chainStateBuilder
 		.transfer('50')
-		.from('2580432900309532760L')
-		.to('4779466276403361478L')
+		.from('12451387766827060593L')
+		.to('4103804705971278554L')
 		.forge();
 
 	chainStateBuilder
 		.transfer('40')
-		.from('4779466276403361478L')
+		.from('4103804705971278554L')
 		.to('2222471382442610527L')
 		.forge();
 
@@ -153,13 +153,13 @@ const generateTestCasesValidTransfersInvalidInSame = () => {
 
 	chainStateBuilder
 		.transfer('50')
-		.from('2580432900309532760L')
-		.to('4779466276403361478L')
+		.from('12451387766827060593L')
+		.to('4103804705971278554L')
 		.forge();
 
 	chainStateBuilder
 		.transfer('40')
-		.from('4779466276403361478L')
+		.from('4103804705971278554L')
 		.to('2222471382442610527L')
 		.transfer('20')
 		.from('2222471382442610527L')
@@ -190,13 +190,13 @@ const generateTestCasesTransferTooMuchSpentInBlockContext = () => {
 
 	chainStateBuilder
 		.transfer('50')
-		.from('2580432900309532760L')
-		.to('4779466276403361478L')
+		.from('12451387766827060593L')
+		.to('4103804705971278554L')
 		.forge();
 
 	chainStateBuilder
 		.transfer('1')
-		.from('4779466276403361478L')
+		.from('4103804705971278554L')
 		.to('2222471382442610527L')
 		.forge();
 
@@ -204,7 +204,7 @@ const generateTestCasesTransferTooMuchSpentInBlockContext = () => {
 	chainStateBuilder
 		.transfer('0.5')
 		.from('2222471382442610527L')
-		.to('4779466276403361478L')
+		.to('4103804705971278554L')
 		.transfer('0.5')
 		.from('2222471382442610527L')
 		.to('11325618463998518034L')

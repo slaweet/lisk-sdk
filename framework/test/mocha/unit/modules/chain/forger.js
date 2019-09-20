@@ -130,7 +130,7 @@ describe('forge', () => {
 					);
 				} catch (err) {
 					expect(err.message).to.equal(
-						'Delegate with publicKey: 6f1195160a7f0d8a33883feafe567e79552d30f9e6d23a99676ebc04c15c95c5 not found',
+						'Delegate with publicKey: 0b3dc5a506e312bac462afc4fb34cdc3b19d1976a279930d15ae3c3516edd188 not found',
 					);
 				}
 			});

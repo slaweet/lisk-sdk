@@ -334,7 +334,7 @@ describe('GET /api/transactions', () => {
 				const transactionInCheck = __testContext.config.genesisBlock.transactions.find(
 					trs => {
 						// Vote type transaction from genesisBlock
-						return trs.id === '9314232245035524467';
+						return trs.id === '15542731749098709272';
 					},
 				);
 
@@ -434,7 +434,7 @@ describe('GET /api/transactions', () => {
 					expect(res.body.data).to.not.empty;
 					// Skip Genesis vote transaction - exception as it contains 101 votes
 					const transactionsType3 = res.body.data.filter(
-						transaction => transaction.recipientId !== '4779466276403361478L',
+						transaction => transaction.recipientId !== '4103804705971278554L',
 					);
 					expect(transactionsType3.length).to.be.above(0);
 					transactionsType3.map(transaction => {
@@ -705,7 +705,7 @@ describe('GET /api/transactions', () => {
 			});
 
 			it('using one blockId should return transactions', async () => {
-				const blockId = '6524861224470851795';
+				const blockId = '16035521652507125836';
 
 				return transactionsEndpoint.makeRequest({ blockId }, 200).then(res => {
 					res.body.data.map(transaction => {

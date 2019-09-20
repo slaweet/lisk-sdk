@@ -4,9 +4,9 @@ const AccountStore = require('../../../../src/modules/chain/state_store/account_
 describe('system test - account store', () => {
 	let library;
 	let accountStore;
-	const persistedAddresses = ['1085993630748340485L', '4779466276403361478L'];
+	const persistedAddresses = ['1085993630748340485L', '4103804705971278554L'];
 	const secondPublicKey =
-		'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8';
+		'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b';
 	const secondSignature = true;
 
 	const accountQuery = [

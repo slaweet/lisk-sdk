@@ -172,7 +172,7 @@ describe('POST /api/transactions (type 0) transfer funds', () => {
 				);
 				expect(res.body.code).to.be.eql(apiCodes.PROCESSING_ERROR);
 				expect(res.body.errors[0].message).to.include(
-					'Account does not have enough LSK: 4779466276403361478L, balance: ',
+					'Account does not have enough LSK: 4103804705971278554L, balance: ',
 				);
 				badTransactions.push(transaction);
 			});
@@ -183,7 +183,7 @@ describe('POST /api/transactions (type 0) transfer funds', () => {
 				type: 0,
 				amount: new BigNum('1000').toString(),
 				senderPublicKey:
-					'c96dec3595ff6041c3bd28b76b8cf75dce8225173d1bd00241624ee89b50f2a8',
+					'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
 				requesterPublicKey: null,
 				timestamp: 24259352,
 				asset: {},

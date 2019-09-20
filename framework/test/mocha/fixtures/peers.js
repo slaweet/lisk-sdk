@@ -21,7 +21,7 @@ const stampit = require('stampit');
 const NormalizedPeer = stampit({
 	props: {
 		broadhash:
-			'198f2b61a8eb95fbeed58b8216780b68f697f26b849acf00c8c93bb9b24f783d',
+			'7f90170dd1ba443bed0505580ca2ad6ba30c6815b7594db0f72f958c021dc58b',
 		height: 1,
 		ip: '40.40.40.40',
 		os: 'unknown',
