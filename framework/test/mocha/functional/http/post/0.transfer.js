@@ -29,8 +29,6 @@ const sendTransactionPromise = require('../../../common/helpers/api')
 const randomUtil = require('../../../common/utils/random');
 const apiCodes = require('../../../../../src/modules/http_api/api_codes');
 
-const { NORMALIZER } = global.__testContext.config;
-
 const specialChar = '❤';
 const nullChar1 = '\0';
 const nullChar2 = '\x00';
@@ -172,7 +170,7 @@ describe('POST /api/transactions (type 0) transfer funds', () => {
 				);
 				expect(res.body.code).to.be.eql(apiCodes.PROCESSING_ERROR);
 				expect(res.body.errors[0].message).to.include(
-					'Account does not have enough LSK: 4103804705971278554L, balance: ',
+					'Account does not have enough LSK: 12451387766827060593L, balance: ',
 				);
 				badTransactions.push(transaction);
 			});
@@ -180,18 +178,19 @@ describe('POST /api/transactions (type 0) transfer funds', () => {
 
 		it('from the genesis account should fail', async () => {
 			const signedTransactionFromGenesis = {
+				id: '5970172519673722038',
+				amount: '1000',
 				type: 0,
-				amount: new BigNum('1000').toString(),
+				timestamp: 24259352,
 				senderPublicKey:
 					'49e51624ec10f6a93910c368dc06edc5d00a5d23eaddccae80a2d5194708317b',
-				requesterPublicKey: null,
-				timestamp: 24259352,
-				asset: {},
-				recipientId: accountFixtures.existingDelegate.address,
+				senderId: '17569527945385187032L',
+				recipientId: '4103804705971278554L',
+				fee: '10000000',
 				signature:
-					'f56a09b2f448f6371ffbe54fd9ac87b1be29fe29f27f001479e044a65e7e42fb1fa48dce6227282ad2a11145691421c4eea5d33ac7f83c6a42e1dcaa44572101',
-				id: '15307587316657110485',
-				fee: new BigNum(NORMALIZER).times(0.1).toString(),
+					'700123f49ca830e31aeaa945eea8938c1fe8d259bb1835eedc04219b4aebdf4a92550041f3227984f57c73d0c82898d7d94935887b48ffd1f90e94f004e9880f',
+				signatures: [],
+				asset: {},
 			};
 
 			return sendTransactionPromise(
@@ -203,7 +202,7 @@ describe('POST /api/transactions (type 0) transfer funds', () => {
 				);
 				expect(res.body.code).to.be.eql(apiCodes.PROCESSING_ERROR);
 				expect(res.body.errors[0].message).to.include(
-					'Account does not have enough LSK: 1085993630748340485L, balance: -',
+					'Account does not have enough LSK: 17569527945385187032L, balance: -',
 				);
 				badTransactions.push(signedTransactionFromGenesis);
 			});
