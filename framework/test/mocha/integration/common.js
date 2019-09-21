@@ -196,8 +196,11 @@ function forge(library, cb) {
 						25,
 					) || [];
 				const sortedTransactions = sortTransactions(transactions);
-				library.modules.processor
-					.create({
+				// TODO: Remove hardcoded values and use from BFT class
+				// Also, remove hardcoded version 1
+				const blockProcessorV1 = library.modules.processor.processors[1];
+				blockProcessorV1.create
+					.run({
 						keypair,
 						timestamp: slots.getSlotTime(slot),
 						transactions: sortedTransactions,
