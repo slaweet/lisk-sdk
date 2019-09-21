@@ -207,8 +207,9 @@ class BlocksTransactionsHelper {
 		);
 
 		const sortedTransactions = sortTransactions(transactions);
-
-		this._block = await this._library.modules.processor.create({
+		// TODO: Remove hardcoded version 1
+		const blockProcessorV1 = this._library.modules.processor.processors[1];
+		this._block = await blockProcessorV1.create.run({
 			keypair,
 			timestamp,
 			previousBlock: lastBlock,

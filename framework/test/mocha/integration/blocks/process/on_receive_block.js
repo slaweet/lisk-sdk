@@ -82,7 +82,9 @@ describe('integration test (blocks) - process receiveBlockFromNetwork()', () => 
 		blockReward,
 		maxPayloadLength,
 	) {
-		const block = await library.modules.processor.create({
+		// TODO: Remove hardcoded version 1
+		const blockProcessorV1 = library.modules.processor.processors[1];
+		const block = await blockProcessorV1.create.run({
 			keypair,
 			timestamp,
 			previousBlock,
