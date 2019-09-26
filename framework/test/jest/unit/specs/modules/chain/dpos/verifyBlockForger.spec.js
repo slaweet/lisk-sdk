@@ -16,7 +16,9 @@
 
 const { Dpos, Slots } = require('../../../../../../../src/modules/chain/dpos');
 const { constants } = require('../../../../../utils');
-const { delegatePublicKeys } = require('./round_delegates');
+const {
+	delegatePublicKeys,
+} = require('../../../../../protocols/data/dpos/round_delegates');
 
 describe('dpos.verifyBlockForger()', () => {
 	const roundOffset = 2;

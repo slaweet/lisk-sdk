@@ -30,7 +30,7 @@ const {
 	uniqueDelegatesWhoForged,
 	delegatesWhoForgedOnceMissedOnce,
 	delegateWhoForgedLast,
-} = require('./round_delegates');
+} = require('../../../../../protocols/data/dpos/round_delegates');
 
 describe('dpos.undo()', () => {
 	const stubs = {};

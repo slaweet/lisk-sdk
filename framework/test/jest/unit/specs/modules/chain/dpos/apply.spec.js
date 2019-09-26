@@ -25,14 +25,17 @@ const { constants, randomInt } = require('../../../../../utils');
 const {
 	delegateAccounts,
 	delegatePublicKeys,
-	sortedDelegateAccounts,
 	sortedDelegatePublicKeys,
 	delegatesWhoForged,
 	delegatesWhoForgedNone,
 	uniqueDelegatesWhoForged,
 	delegatesWhoForgedOnceMissedOnce,
 	delegateWhoForgedLast,
-} = require('./round_delegates');
+} = require('../../../../../protocols/data/dpos/round_delegates');
+
+const {
+	sortedDelegateAccountsProtocol,
+} = require('../../../../../protocols/io_connectors/storage/entities/account/get');
 
 describe('dpos.apply()', () => {
 	const stubs = {};
@@ -88,16 +91,8 @@ describe('dpos.apply()', () => {
 			};
 
 			when(stubs.storage.entities.Account.get)
-				.calledWith(
-					{
-						isDelegate: true,
-					},
-					{
-						limit: constants.ACTIVE_DELEGATES,
-						sort: ['voteWeight:desc', 'publicKey:asc'],
-					},
-				)
-				.mockResolvedValue(sortedDelegateAccounts);
+				.calledWith(...sortedDelegateAccountsProtocol.args)
+				.mockResolvedValue(sortedDelegateAccountsProtocol.resolvedData);
 		});
 
 		it('should save round 1 active delegates list in round_delegates table by using delegate accounts', async () => {
@@ -254,16 +249,8 @@ describe('dpos.apply()', () => {
 				.mockResolvedValue(delegatesWhoForged);
 
 			when(stubs.storage.entities.Account.get)
-				.calledWith(
-					{
-						isDelegate: true,
-					},
-					{
-						limit: constants.ACTIVE_DELEGATES,
-						sort: ['voteWeight:desc', 'publicKey:asc'],
-					},
-				)
-				.mockResolvedValue(sortedDelegateAccounts);
+				.calledWith(...sortedDelegateAccountsProtocol.args)
+				.mockResolvedValue(sortedDelegateAccountsProtocol.resolvedData);
 
 			feePerDelegate = randomInt(10, 100);
 			totalFee = feePerDelegate * constants.ACTIVE_DELEGATES;
