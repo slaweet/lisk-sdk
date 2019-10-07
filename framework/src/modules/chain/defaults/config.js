@@ -42,7 +42,7 @@ const defaultConfig = {
 				maxTransactionsPerQueue: {
 					type: 'integer',
 					minimum: 100,
-					maximum: 5000,
+					maximum: 100000,
 				},
 			},
 			required: ['maxTransactionsPerQueue'],
@@ -250,7 +250,7 @@ const defaultConfig = {
 			releaseLimit: 25,
 		},
 		transactions: {
-			maxTransactionsPerQueue: 1000,
+			maxTransactionsPerQueue: 100000,
 		},
 		forging: {
 			force: false,
