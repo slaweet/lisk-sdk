@@ -64,7 +64,7 @@ const createVoteTransaction = (passphrase, upvotes = [], downvotes = []) => {
 const randomInt = max => Math.floor(Math.random() * max);
 
 const generateBlock = async (forger, transactions) => {
-	const currentSlot = forger.slots.getSlotTime(forger.slots.getSlotTime(forger.blocksModule.lastBlock.timestamp) + 1);
+	const currentSlot = forger.slots.getSlotNumber(forger.blocksModule.lastBlock.timestamp) + 1;
 	// We calculate round using height + 1, because we want the delegate keypair for next block to be forged
 	const round = forger.slots.calcRound(forger.blocksModule.lastBlock.height + 1);
 
