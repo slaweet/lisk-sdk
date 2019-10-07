@@ -155,7 +155,7 @@ module.exports = class Chain {
 
 			this.channel.subscribe('network:bootstrap', async () => {
 				this._calculateConsensus();
-				await this._startForging();
+				// await this._startForging();
 			});
 
 			this.channel.subscribe('network:ready', async () => {

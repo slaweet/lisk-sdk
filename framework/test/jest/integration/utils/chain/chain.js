@@ -20,21 +20,23 @@ const { defaultTransactions } = require('../default_transactions');
 const { createMockChannel } = require('../channel');
 const ChainModule = require('../../../../../src/modules/chain');
 const genesisBlock = require('../../../../fixtures/config/devnet/genesis_block');
+const devnetConfig = require('../../../../fixtures/config/devnet/config');
 
-const createChainModule = () => {
+const createChainModule = (config = {}) => {
 	const options = {
 		...ChainModule.defaults.default,
-		constants: constantsConfig(),
+		constants: constantsConfig(config),
 		genesisBlock,
 		registeredTransactions: defaultTransactions(),
+		...devnetConfig.modules.chain,
 	};
 	const chainModule = new ChainModule(options);
 
 	return chainModule;
 };
 
-const createAndLoadChainModule = async databaseName => {
-	const chainModule = createChainModule();
+const createAndLoadChainModule = async (databaseName, config = {}) => {
+	const chainModule = createChainModule(config);
 	await chainModule.load(createMockChannel(databaseName));
 	return chainModule.chain;
 };

@@ -8,6 +8,7 @@ const {
 	getKeys,
 	getAddressFromPublicKey,
 } = require('@liskhq/lisk-cryptography');
+const { getDelegateKeypairForCurrentSlot } = require('../../../../src/modules/chain/forger');
 
 const createAccount = () => {
 	const passphrase = Mnemonic.generateMnemonic();
@@ -60,8 +61,31 @@ const createVoteTransaction = (passphrase, upvotes = [], downvotes = []) => {
 	return transaction.toJSON();
 };
 
-const randomInt = max =>
-	Math.floor(Math.random() * max);
+const randomInt = max => Math.floor(Math.random() * max);
+
+const generateBlock = async (forger, transactions) => {
+	const currentSlot = forger.slots.getSlotTime(forger.slots.getSlotTime(forger.blocksModule.lastBlock.timestamp) + 1);
+	// We calculate round using height + 1, because we want the delegate keypair for next block to be forged
+	const round = forger.slots.calcRound(forger.blocksModule.lastBlock.height + 1);
+
+	const delegateKeypair = await getDelegateKeypairForCurrentSlot(
+		forger.roundsModule,
+		forger.keypairs,
+		currentSlot,
+		round,
+		forger.constants.activeDelegates,
+	);
+
+	if (delegateKeypair === null) {
+		throw new Error('no delegate key pair');
+	}
+
+	return forger.blocksModule.generateBlock(
+		delegateKeypair,
+		forger.slots.getSlotTime(currentSlot),
+		transactions,
+	);
+};
 
 module.exports = {
 	createAccount,
@@ -70,4 +94,5 @@ module.exports = {
 	createDelegateTransaction,
 	createVoteTransaction,
 	randomInt,
+	generateBlock,
 };
