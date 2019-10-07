@@ -11,8 +11,7 @@ const { generateBlock } = require('./utils');
 const { chainUtils, storageUtils, configUtils } = require('../utils');
 
 const maxTxNum = 120;
-
-jest.setTimeout(2147483647);
+const maxTimeout = Math.pow(2, 31) - 1;
 
 describe.only('benchmark', () => {
 	const dbName = 'benchmark';
@@ -38,21 +37,56 @@ describe.only('benchmark', () => {
 				const txs = prepareTxs
 					.slice(i * maxTxNum, (i + 1) * maxTxNum)
 					.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
-				console.log('forgeing', i);
+				console.log(`Forgeing ${i} / ${loopNum}`);
 				console.time('forge');
 				const block = await generateBlock(chainModule.forger, txs);
-				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
 				console.timeEnd('forge');
+				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
 			}
-	});
+	}, maxTimeout);
 
 	afterAll(async () => {
 		await chainModule.cleanup();
 		await storage.cleanup();
 	});
 
-	describe('', () => {
-		it('start', async () => {
+	describe('Test cases', () => {
+		afterEach(async () => {
+			await chainModule.blocks.recoverChain();
 		});
+
+		for (const i of new Array(100).fill(0)) {
+			it('type 1', async () => {
+				const txs = type1.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				console.time('forge-1');
+				const block = await generateBlock(chainModule.forger, txs);
+				console.timeEnd('forge-1');
+				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+			});
+
+			it('type 2', async () => {
+				const txs = type2.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				console.time('forge-2');
+				const block = await generateBlock(chainModule.forger, txs);
+				console.timeEnd('forge-2');
+				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+			});
+
+			it('type 3', async () => {
+				const txs = type3.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				console.time('forge-3');
+				const block = await generateBlock(chainModule.forger, txs);
+				console.timeEnd('forge-3');
+				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+			});
+
+			it('type 4', async () => {
+				const txs = type4.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				console.time('forge-4');
+				const block = await generateBlock(chainModule.forger, txs);
+				console.timeEnd('forge-4');
+				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+			});
+		}
 	});
 });
