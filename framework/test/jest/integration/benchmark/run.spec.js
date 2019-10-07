@@ -29,20 +29,24 @@ describe.only('benchmark', () => {
 		});
 		await chainModule.forger.loadDelegates();
 		const prepareTxs = [...creditTxs, ...registerTxs, ...voteTxs];
-			const loopNum = Math.ceil(prepareTxs.length / maxTxNum);
+		const loopNum = Math.ceil(prepareTxs.length / maxTxNum);
 
-			console.log(`creating ${loopNum} blocks`);
+		console.log(`creating ${loopNum} blocks`);
 
-			for (let i = 0; i < loopNum; i++) {
-				const txs = prepareTxs
-					.slice(i * maxTxNum, (i + 1) * maxTxNum)
-					.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
-				console.log(`Forgeing ${i} / ${loopNum}`);
-				console.time('forge');
-				const block = await generateBlock(chainModule.forger, txs);
-				console.timeEnd('forge');
-				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
-			}
+		for (let i = 0; i < loopNum; i++) {
+			const txs = prepareTxs
+				.slice(i * maxTxNum, (i + 1) * maxTxNum)
+				.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+			console.log(`Forgeing ${i} / ${loopNum}`);
+			console.time('forge');
+			const block = await generateBlock(chainModule.forger, txs);
+			console.timeEnd('forge');
+			console.log(
+				`Forged block ${block.id} with transactions ${
+					block.transactions.length
+				}`,
+			);
+		}
 	}, maxTimeout);
 
 	afterAll(async () => {
@@ -52,40 +56,64 @@ describe.only('benchmark', () => {
 
 	describe('Test cases', () => {
 		afterEach(async () => {
-			await chainModule.blocks.recoverChain();
+			await chainModule.processor.deleteLastBlock();
 		});
 
 		for (const i of new Array(100).fill(0)) {
 			it('type 1', async () => {
-				const txs = type1.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				const txs = type1.map(tx =>
+					chainModule.interfaceAdapters.transactions.fromJson(tx),
+				);
 				console.time('forge-1');
 				const block = await generateBlock(chainModule.forger, txs);
 				console.timeEnd('forge-1');
-				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+				console.log(
+					`Forged block ${block.id} with transactions ${
+						block.transactions.length
+					}`,
+				);
 			});
 
 			it('type 2', async () => {
-				const txs = type2.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				const txs = type2.map(tx =>
+					chainModule.interfaceAdapters.transactions.fromJson(tx),
+				);
 				console.time('forge-2');
 				const block = await generateBlock(chainModule.forger, txs);
 				console.timeEnd('forge-2');
-				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+				console.log(
+					`Forged block ${block.id} with transactions ${
+						block.transactions.length
+					}`,
+				);
 			});
 
 			it('type 3', async () => {
-				const txs = type3.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				const txs = type3.map(tx =>
+					chainModule.interfaceAdapters.transactions.fromJson(tx),
+				);
 				console.time('forge-3');
 				const block = await generateBlock(chainModule.forger, txs);
 				console.timeEnd('forge-3');
-				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+				console.log(
+					`Forged block ${block.id} with transactions ${
+						block.transactions.length
+					}`,
+				);
 			});
 
 			it('type 4', async () => {
-				const txs = type4.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
+				const txs = type4.map(tx =>
+					chainModule.interfaceAdapters.transactions.fromJson(tx),
+				);
 				console.time('forge-4');
 				const block = await generateBlock(chainModule.forger, txs);
 				console.timeEnd('forge-4');
-				console.log(`Forged block ${block.id} with transactions ${block.transactions.length}`);
+				console.log(
+					`Forged block ${block.id} with transactions ${
+						block.transactions.length
+					}`,
+				);
 			});
 		}
 	});

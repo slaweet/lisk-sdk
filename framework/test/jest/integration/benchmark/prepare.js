@@ -46,10 +46,23 @@ for (const [i, delegate] of delegates.entries()) {
 
 const voteTxs = [];
 for (const [i, voter] of voters.entries()) {
+	const start = i * 101;
 	voteTxs.push(
 		createVoteTransaction(
 			voter.passphrase,
-			delegates.slice(i * 101, (i + 1) * 101).map(d => d.publicKey),
+			delegates.slice(start, start + 33).map(d => d.publicKey),
+		),
+		createVoteTransaction(
+			voter.passphrase,
+			delegates.slice(start + 33, start + 66).map(d => d.publicKey),
+		),
+		createVoteTransaction(
+			voter.passphrase,
+			delegates.slice(start + 66, start + 99).map(d => d.publicKey),
+		),
+		createVoteTransaction(
+			voter.passphrase,
+			delegates.slice(start + 99, start + 101).map(d => d.publicKey),
 		),
 	);
 }
@@ -72,7 +85,7 @@ for (const [i, account] of defaultAccount.entries()) {
 	type3.push(
 		createVoteTransaction(
 			account.passphrase,
-			delegates.slice(i * 101, (i + 1) * 101).map(d => d.publicKey),
+			delegates.slice(i * 101, i * 101 + 33).map(d => d.publicKey),
 		),
 	);
 }
