@@ -66,7 +66,7 @@ for (const account of voters) {
 
 const type3 = [];
 for (const account of voters.slice(8)) {
-	type3.push(createTransferTransaction(account.passphrase, '12345L', '1'));
+	type3.push(createTransferTransaction(account.passphrase, '123456L', '2'));
 }
 for (const [i, account] of defaultAccount.entries()) {
 	type3.push(
