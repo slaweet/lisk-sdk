@@ -59,7 +59,7 @@ describe.only('benchmark', () => {
 			await chainModule.processor.deleteLastBlock();
 		});
 
-		for (const i of new Array(1).fill(0)) {
+		for (const i of new Array(100).fill(0)) {
 			it('type 1', async () => {
 				const txs = type1.map(tx =>
 					chainModule.interfaceAdapters.transactions.fromJson(tx),
