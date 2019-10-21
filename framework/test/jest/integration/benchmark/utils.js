@@ -7,6 +7,7 @@ const { Mnemonic } = require('@liskhq/lisk-passphrase');
 const {
 	getKeys,
 	getAddressFromPublicKey,
+	getAddressFromPassphrase,
 } = require('@liskhq/lisk-cryptography');
 const {
 	getDelegateKeypairForCurrentSlot,
@@ -32,8 +33,10 @@ const createAccounts = (numberOfAccounts = 1) => {
 
 const createTransferTransaction = (passphrase, recipientId, amount) => {
 	const transaction = new TransferTransaction({
-		recipientId,
-		amount,
+		asset: {
+			recipientId,
+			amount,
+		},
 	});
 	transaction.sign(passphrase);
 	return transaction.toJSON();
@@ -42,9 +45,7 @@ const createTransferTransaction = (passphrase, recipientId, amount) => {
 const createDelegateTransaction = (passphrase, username) => {
 	const transaction = new DelegateTransaction({
 		asset: {
-			delegate: {
-				username,
-			},
+			username,
 		},
 	});
 	transaction.sign(passphrase);
@@ -56,6 +57,7 @@ const createVoteTransaction = (passphrase, upvotes = [], downvotes = []) => {
 	const signedDownvotes = downvotes.map(v => `-${v}`);
 	const transaction = new VoteTransaction({
 		asset: {
+			recipientId: getAddressFromPassphrase(passphrase),
 			votes: [...signedUpvotes, ...signedDownvotes],
 		},
 	});
