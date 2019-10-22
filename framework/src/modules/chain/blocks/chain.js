@@ -14,6 +14,7 @@
 
 'use strict';
 
+const { performance } = require('perf_hooks');
 const { Status: TransactionStatus } = require('@liskhq/lisk-transactions');
 const transactionsModule = require('../transactions');
 
@@ -134,6 +135,7 @@ const applyConfirmedStep = async (storage, slots, block, exceptions, tx) => {
 			!transactionsModule.checkIfTransactionIsInert(transaction, exceptions),
 	);
 
+	performance.mark('txs-apply');
 	const {
 		stateStore,
 		transactionsResponses,
@@ -141,6 +143,7 @@ const applyConfirmedStep = async (storage, slots, block, exceptions, tx) => {
 		nonInertTransactions,
 		tx,
 	);
+	performance.mark('txs-done');
 
 	const unappliableTransactionsResponse = transactionsResponses.filter(
 		transactionResponse => transactionResponse.status !== TransactionStatus.OK,
@@ -151,6 +154,9 @@ const applyConfirmedStep = async (storage, slots, block, exceptions, tx) => {
 	}
 
 	await stateStore.account.finalize();
+	performance.mark('finalize-done');
+	performance.measure('txs-apply', 'txs-apply', 'txs-done');
+	performance.measure('txs-finalize', 'txs-done', 'finalize-done');
 };
 
 /**

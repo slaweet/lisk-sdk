@@ -9,6 +9,18 @@ const {
 } = require('./prepare');
 const { generateBlock } = require('./utils');
 const { chainUtils, storageUtils, configUtils } = require('../utils');
+const { PerformanceObserver } = require('perf_hooks');
+const debug = require('debug')('benchmark');
+
+const obs = new PerformanceObserver(items => {
+	debug(
+		`name: ${items.getEntries()[0].name}, duration: ${
+			items.getEntries()[0].duration
+		}`,
+	);
+	// performance.clearMarks();
+});
+obs.observe({ entryTypes: ['measure'] });
 
 const maxTxNum = 120;
 const maxTimeout = Math.pow(2, 31) - 1;
@@ -31,17 +43,15 @@ describe.only('benchmark', () => {
 		const prepareTxs = [...creditTxs, ...registerTxs, ...voteTxs];
 		const loopNum = Math.ceil(prepareTxs.length / maxTxNum);
 
-		console.log(`creating ${loopNum} blocks`);
+		debug(`creating ${loopNum} blocks`);
 
 		for (let i = 0; i < loopNum; i++) {
 			const txs = prepareTxs
 				.slice(i * maxTxNum, (i + 1) * maxTxNum)
 				.map(tx => chainModule.interfaceAdapters.transactions.fromJson(tx));
-			console.log(`Forgeing ${i} / ${loopNum}`);
-			console.time('forge');
+			debug(`Forging ${i} / ${loopNum}`);
 			const block = await generateBlock(chainModule.forger, txs);
-			console.timeEnd('forge');
-			console.log(
+			debug(
 				`Forged block ${block.id} with transactions ${
 					block.transactions.length
 				}`,
@@ -64,10 +74,8 @@ describe.only('benchmark', () => {
 				const txs = type1.map(tx =>
 					chainModule.interfaceAdapters.transactions.fromJson(tx),
 				);
-				console.time('forge-1');
 				const block = await generateBlock(chainModule.forger, txs);
-				console.timeEnd('forge-1');
-				console.log(
+				debug(
 					`Forged block ${block.id} with transactions ${
 						block.transactions.length
 					}`,
@@ -78,10 +86,8 @@ describe.only('benchmark', () => {
 				const txs = type2.map(tx =>
 					chainModule.interfaceAdapters.transactions.fromJson(tx),
 				);
-				console.time('forge-2');
 				const block = await generateBlock(chainModule.forger, txs);
-				console.timeEnd('forge-2');
-				console.log(
+				debug(
 					`Forged block ${block.id} with transactions ${
 						block.transactions.length
 					}`,
@@ -92,10 +98,8 @@ describe.only('benchmark', () => {
 				const txs = type3.map(tx =>
 					chainModule.interfaceAdapters.transactions.fromJson(tx),
 				);
-				console.time('forge-3');
 				const block = await generateBlock(chainModule.forger, txs);
-				console.timeEnd('forge-3');
-				console.log(
+				debug(
 					`Forged block ${block.id} with transactions ${
 						block.transactions.length
 					}`,
@@ -106,10 +110,8 @@ describe.only('benchmark', () => {
 				const txs = type4.map(tx =>
 					chainModule.interfaceAdapters.transactions.fromJson(tx),
 				);
-				console.time('forge-4');
 				const block = await generateBlock(chainModule.forger, txs);
-				console.timeEnd('forge-4');
-				console.log(
+				debug(
 					`Forged block ${block.id} with transactions ${
 						block.transactions.length
 					}`,

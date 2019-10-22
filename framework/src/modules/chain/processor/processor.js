@@ -14,6 +14,7 @@
 
 'use strict';
 
+const { performance } = require('perf_hooks');
 const { cloneDeep } = require('lodash');
 const {
 	FORK_STATUS_IDENTICAL_BLOCK,
@@ -87,6 +88,7 @@ class Processor {
 	// process is for standard processing of block, especially when received from network
 	async process(block) {
 		return this.sequence.add(async () => {
+			performance.mark('start');
 			this.logger.debug(
 				{ id: block.id, height: block.height },
 				'Starting to process block',
@@ -176,15 +178,18 @@ class Processor {
 				{ id: block.id, height: block.height },
 				'Processing valid block',
 			);
+			performance.mark('forkchoice');
 			// Process block as it's valid: FORK_STATUS_VALID_BLOCK
 			await blockProcessor.validateNew.run({
 				block,
 				lastBlock,
 			});
+			performance.mark('validatenew');
 			await blockProcessor.validate.run({
 				block,
 				lastBlock,
 			});
+			performance.mark('validate');
 			await this._processValidated(block, lastBlock, blockProcessor);
 		});
 	}
@@ -293,6 +298,7 @@ class Processor {
 				skipExistingCheck: skipSave,
 				tx,
 			});
+			performance.mark('verify');
 
 			if (!skipBroadcast) {
 				this.channel.publish('chain:processor:broadcast', {
@@ -304,6 +310,7 @@ class Processor {
 				const blockJSON = await this.serialize(block);
 				await this.blocksModule.save({ blockJSON, tx });
 			}
+			performance.mark('save');
 
 			// Apply should always be executed after save as it performs database calculations
 			// i.e. Dpos.apply expects to have this processing block in the database
@@ -313,6 +320,7 @@ class Processor {
 				skipExistingCheck: skipSave,
 				tx,
 			});
+			performance.mark('apply');
 
 			if (removeFromTempTable) {
 				await this.blocksModule.removeBlockFromTempTable(block.id, tx);
@@ -328,6 +336,11 @@ class Processor {
 					block: cloneDeep(block),
 				});
 			}
+			performance.mark('done');
+			performance.measure('verify', 'validate', 'verify');
+			performance.measure('save', 'verify', 'save');
+			performance.measure('apply', 'save', 'apply');
+			performance.measure('overall', 'start', 'done');
 
 			return block;
 		});

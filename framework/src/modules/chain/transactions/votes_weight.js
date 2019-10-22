@@ -14,6 +14,7 @@
 
 'use strict';
 
+const { performance } = require('perf_hooks');
 const BigNum = require('@liskhq/bignum');
 const { getAddressFromPublicKey } = require('@liskhq/lisk-cryptography');
 
@@ -202,9 +203,28 @@ const updateDelegateVotes = (stateStore, transaction, undo = false) => {
 };
 
 const apply = (stateStore, transaction, exceptions = {}) => {
+	performance.mark('updateRecipientDelegateVotes');
 	updateRecipientDelegateVotes(stateStore, transaction);
+	performance.mark('updateSenderDelegateVotes');
 	updateSenderDelegateVotes(stateStore, transaction, exceptions);
+	performance.mark('updateDelegateVotes');
 	updateDelegateVotes(stateStore, transaction);
+	performance.mark('updateDelegateVotes-done');
+	performance.measure(
+		'updateRecipientDelegateVotes',
+		'updateRecipientDelegateVotes',
+		'updateSenderDelegateVotes',
+	);
+	performance.measure(
+		'updateSenderDelegateVotes',
+		'updateSenderDelegateVotes',
+		'updateDelegateVotes',
+	);
+	performance.measure(
+		'updateDelegateVotes',
+		'updateDelegateVotes',
+		'updateDelegateVotes-done',
+	);
 };
 
 const undo = (stateStore, transaction, exceptions = {}) => {

@@ -14,6 +14,7 @@
 
 'use strict';
 
+const { performance } = require('perf_hooks');
 const BigNum = require('@liskhq/bignum');
 const {
 	Status: TransactionStatus,
@@ -144,19 +145,30 @@ const applyGenesisTransactions = storage => async (
 
 const applyTransactions = (storage, exceptions) => async (transactions, tx) => {
 	// Get data required for verifying transactions
+	performance.mark('apply-tx-start');
 	const stateStore = new StateStore(storage, {
 		mutate: true,
 		tx,
 	});
 
+	performance.mark('prepare-tx');
 	await Promise.all(transactions.map(t => t.prepare(stateStore)));
+	performance.mark('vote-weight-tx-prepare');
 	await votesWeight.prepare(stateStore, transactions);
+	performance.mark('vote-weight-tx-prepare-done');
+	performance.measure('prepare-tx', 'prepare-tx', 'vote-weight-tx-prepare');
+	performance.measure(
+		'prepare-vote',
+		'vote-weight-tx-prepare',
+		'vote-weight-tx-prepare-done',
+	);
 
 	// Verify total spending of per account accumulative
 	const transactionsResponseWithSpendingErrors = verifyTotalSpending(
 		transactions,
 		stateStore,
 	);
+	performance.mark('verify-total-spending');
 
 	const transactionsWithoutSpendingErrors = transactions.filter(
 		transaction =>
@@ -168,8 +180,12 @@ const applyTransactions = (storage, exceptions) => async (transactions, tx) => {
 	const transactionsResponses = transactionsWithoutSpendingErrors.map(
 		transaction => {
 			// FIXME: optimize this since this takes more than 1ms per iteration
+			performance.mark('create-snapshot');
 			stateStore.account.createSnapshot();
+			performance.mark('tx-apply-start');
 			const transactionResponse = transaction.apply(stateStore);
+			performance.mark('tx-apply-done');
+			performance.measure('tx-apply-one', 'tx-apply-start', 'tx-apply-done');
 			if (transactionResponse.status !== TransactionStatus.OK) {
 				// update transaction response mutates the transaction response object
 				exceptionsHandlers.updateTransactionResponseForExceptionTransactions(
@@ -181,7 +197,14 @@ const applyTransactions = (storage, exceptions) => async (transactions, tx) => {
 
 			if (transactionResponse.status === TransactionStatus.OK) {
 				// FIXME: optimize this since this takes more than 1ms per iteration
+				performance.mark('vote-apply-start');
 				votesWeight.apply(stateStore, transaction, exceptions);
+				performance.mark('vote-apply-done');
+				performance.measure(
+					'vote-apply',
+					'vote-apply-start',
+					'vote-apply-done',
+				);
 				stateStore.transaction.add(transaction);
 			}
 

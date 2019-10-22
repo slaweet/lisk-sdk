@@ -14,6 +14,7 @@
 
 'use strict';
 
+const { performance } = require('perf_hooks');
 const BigNum = require('@liskhq/bignum');
 const { validator } = require('@liskhq/lisk-validator');
 const {
@@ -228,10 +229,29 @@ class BlockProcessorV2 extends BaseBlockProcessor {
 		this.verify.pipe([({ block }) => this.bftModule.verifyNewBlock(block)]);
 
 		this.apply.pipe([
+			() => {
+				performance.mark('block_verify');
+			},
 			data => this.blocksModule.verify(data),
+			() => {
+				performance.mark('block_apply');
+			},
 			data => this.blocksModule.apply(data),
+			() => {
+				performance.mark('dpos_apply');
+			},
 			({ block, tx }) => this.dposModule.apply(block, { tx }),
+			() => {
+				performance.mark('bft_apply');
+			},
 			({ block, tx }) => this.bftModule.addNewBlock(block, tx),
+			() => {
+				performance.mark('apply_done');
+				performance.measure('block_verify', 'block_verify', 'block_apply');
+				performance.measure('block_apply', 'block_apply', 'dpos_apply');
+				performance.measure('dpos_apply', 'dpos_apply', 'bft_apply');
+				performance.measure('bft_apply', 'bft_apply', 'apply_done');
+			},
 		]);
 
 		this.applyGenesis.pipe([
