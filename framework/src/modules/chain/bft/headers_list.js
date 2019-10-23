@@ -57,7 +57,7 @@ class HeadersList {
 		return this.items[this.length - 1];
 	}
 
-	add(blockHeader) {
+	add(blockHeader, delegateMinHeightActive) {
 		const { first, last } = this;
 
 		if (this.items.length) {
@@ -73,7 +73,7 @@ class HeadersList {
 
 		if (first && blockHeader.height === last.height + 1) {
 			// Add to the end
-			this.items.push(blockHeader);
+			this.items.push({ blockHeader, delegateMinHeightActive });
 		} else {
 			// Add to the start
 			this.items.unshift(blockHeader);

@@ -34,8 +34,11 @@ const extractBFTBlockHeaderFromBlock = block => ({
 	maxHeightPreviouslyForged: block.maxHeightPreviouslyForged,
 	prevotedConfirmedUptoHeight: block.prevotedConfirmedUptoHeight,
 	delegatePublicKey: block.generatorPublicKey,
-	activeSinceRound: 0, // TODO: Link the new DPOS with BFT here
 });
+
+// Get first block of the round when delegate was active
+const getDelegateMinHeightActive = activeSinceRound =>
+	(activeSinceRound - 1) * this.activeDelegates + 1;
 
 /**
  * BFT class responsible to hold integration logic for finality manager with the framework
@@ -166,8 +169,15 @@ class BFT extends EventEmitter {
 	 * @param {Object} tx - database transaction
 	 * @return {Promise<void>}
 	 */
-	async addNewBlock(block, tx) {
-		this.finalityManager.addBlockHeader(extractBFTBlockHeaderFromBlock(block));
+	async addNewBlock(block, activeSinceRound, tx) {
+		const delegateMinHeightActive = getDelegateMinHeightActive(
+			activeSinceRound,
+		);
+
+		this.finalityManager.addBlockHeader(
+			extractBFTBlockHeaderFromBlock(block),
+			delegateMinHeightActive,
+		);
 		const { finalizedHeight } = this.finalityManager;
 		// TODO: this should be memory operation in the state store
 		return this.chainMetaEntity.setKey(
@@ -177,9 +187,14 @@ class BFT extends EventEmitter {
 		);
 	}
 
-	async verifyNewBlock(block) {
+	async verifyNewBlock(block, activeSinceRound) {
+		const delegateMinHeightActive = getDelegateMinHeightActive(
+			activeSinceRound,
+		);
+
 		return this.finalityManager.verifyBlockHeaders(
 			extractBFTBlockHeaderFromBlock(block),
+			delegateMinHeightActive,
 		);
 	}
 

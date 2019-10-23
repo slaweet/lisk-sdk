@@ -47,7 +47,10 @@ describe('FinalityManager', () => {
 					} forge block at height = ${
 						testCase.input.blockHeader.height
 					}`, async () => {
-						myBft.addBlockHeader(testCase.input.blockHeader);
+						myBft.addBlockHeader(
+							testCase.input.blockHeader,
+							testCase.input.activeSinceRound,
+						);
 
 						expect(myBft.preCommits).toEqual(testCase.output.preCommits);
 
@@ -77,7 +80,10 @@ describe('FinalityManager', () => {
 				it('should have accurate information after recompute', async () => {
 					// Let's first compute in proper way
 					scenario.testCases.forEach(testCase => {
-						myBft.addBlockHeader(testCase.input.blockHeader);
+						myBft.addBlockHeader(
+							testCase.input.blockHeader,
+							testCase.input.activeSinceRound,
+						);
 					});
 					const lastTestCaseOutput =
 						scenario.testCases[scenario.testCases.length - 1].output;
@@ -131,7 +137,10 @@ describe('FinalityManager', () => {
 				it('should have accurate information after recompute', async () => {
 					// Arrange - Let's first compute in proper way
 					scenario.testCases.forEach(testCase => {
-						myBft.addBlockHeader(testCase.input.blockHeader);
+						myBft.addBlockHeader(
+							testCase.input.blockHeader,
+							testCase.input.activeSinceRound,
+						);
 					});
 					const testCaseInMiddle =
 						scenario.testCases[Math.ceil(scenario.testCases.length / 2)];

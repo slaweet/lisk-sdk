@@ -51,7 +51,6 @@ describe('bft', () => {
 				prevotedConfirmedUptoHeight,
 				generatorPublicKey: delegatePublicKey,
 			} = block;
-			const activeSinceRound = 0;
 
 			const blockHeader = {
 				blockId,
@@ -59,7 +58,6 @@ describe('bft', () => {
 				maxHeightPreviouslyForged,
 				prevotedConfirmedUptoHeight,
 				delegatePublicKey,
-				activeSinceRound,
 			};
 
 			expect(extractBFTBlockHeaderFromBlock(block)).toEqual(blockHeader);

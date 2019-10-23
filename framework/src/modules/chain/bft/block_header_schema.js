@@ -30,9 +30,6 @@ module.exports = {
 		prevotedConfirmedUptoHeight: {
 			type: 'integer',
 		},
-		activeSinceRound: {
-			type: 'integer',
-		},
 		delegatePublicKey: {
 			type: 'string',
 			format: 'publicKey',
@@ -43,7 +40,6 @@ module.exports = {
 		'height',
 		'maxHeightPreviouslyForged',
 		'prevotedConfirmedUptoHeight',
-		'activeSinceRound',
 		'delegatePublicKey',
 	],
 };

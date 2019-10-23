@@ -29,7 +29,6 @@ const generateBlockHeader = ({
 	delegateName,
 	height,
 	maxHeightPreviouslyForged,
-	activeSinceRound,
 	prevotedConfirmedUptoHeight,
 }) => {
 	const delegatePublicKey = getKeys(delegateName).publicKey;
@@ -44,7 +43,6 @@ const generateBlockHeader = ({
 		height,
 		maxHeightPreviouslyForged,
 		delegatePublicKey,
-		activeSinceRound,
 		prevotedConfirmedUptoHeight,
 	};
 };
@@ -62,7 +60,6 @@ const generateBlockHeadersSeries = ({ activeDelegates, count }) => {
 			height,
 			maxHeightPreviouslyForged:
 				maxHeightPreviouslyForged < 0 ? 0 : maxHeightPreviouslyForged,
-			activeSinceRound: 1,
 			prevotedConfirmedUptoHeight:
 				prevotedConfirmedUptoHeight < 0 ? 0 : prevotedConfirmedUptoHeight,
 		});

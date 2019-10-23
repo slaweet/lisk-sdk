@@ -40,11 +40,10 @@ const bftFinalityStepsGenerator = ({ activeDelegates, filePath }) => {
 			delegateName,
 			height,
 			maxHeightPreviouslyForged,
-			activeSinceRound,
 			prevotedConfirmedUptoHeight,
 		});
 
-		const input = { delegateName, blockHeader };
+		const input = { delegateName, blockHeader, activeSinceRound };
 
 		const preCommitsRow = rows[i].slice(7).map(Number);
 		const preVotesRow = rows[i + 1].slice(7).map(Number);

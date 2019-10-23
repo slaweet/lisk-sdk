@@ -33,7 +33,6 @@ const EVENT_BFT_FINALIZED_HEIGHT_CHANGED = 'EVENT_BFT_FINALIZED_HEIGHT_CHANGED';
  * @property {int} height
  * @property {int} maxHeightPreviouslyForged
  * @property {int} prevotedConfirmedUptoHeight
- * @property {int} activeSinceRound
  * @property {string} delegatePublicKey
  */
 
@@ -79,7 +78,7 @@ class FinalityManager extends EventEmitter {
 	 * @param {BlockHeader} blockHeader
 	 * @return {Block_headers_manager}
 	 */
-	addBlockHeader(blockHeader) {
+	addBlockHeader(blockHeader, delegateMinHeightActive) {
 		debug('addBlockHeader invoked');
 		debug('validateBlockHeader invoked');
 		// Validate the schema of the header
@@ -100,7 +99,7 @@ class FinalityManager extends EventEmitter {
 		// Add the header to the list
 		this.headers.add(blockHeader);
 		// Update the pre-votes and pre-commits
-		this.updatePreVotesPreCommits(blockHeader);
+		this.updatePreVotesPreCommits(blockHeader, delegateMinHeightActive);
 
 		// Update the pre-voted confirmed and finalized height
 		this.updatePreVotedAndFinalizedHeight();
@@ -142,7 +141,7 @@ class FinalityManager extends EventEmitter {
 	 * @param {BlockHeader} lastBlockHeader
 	 * @return {Boolean}
 	 */
-	updatePreVotesPreCommits(lastBlockHeader) {
+	updatePreVotesPreCommits(lastBlockHeader, delegateMinHeightActive) {
 		debug('updatePreVotesPreCommits invoked');
 		// Update applies particularly in reference to last block header in the list
 		const header = lastBlockHeader || this.headers.last;
@@ -163,10 +162,6 @@ class FinalityManager extends EventEmitter {
 			maxPreCommitHeight: 0,
 		};
 
-		// Get first block of the round when delegate was active
-		const heightSinceDelegateActive =
-			(header.activeSinceRound - 1) * this.activeDelegates + 1;
-
 		const validMinHeightToVoteAndCommit = this._getValidMinHeightToCommit(
 			header,
 		);
@@ -175,7 +170,7 @@ class FinalityManager extends EventEmitter {
 		// if it forged before then we probably have the last commit height
 		// delegate can't pre-commit a block before the above mentioned conditions
 		const minPreCommitHeight = Math.max(
-			heightSinceDelegateActive,
+			delegateMinHeightActive,
 			validMinHeightToVoteAndCommit,
 			delegateState.maxPreCommitHeight + 1,
 		);
@@ -200,7 +195,7 @@ class FinalityManager extends EventEmitter {
 		// Or one step ahead where it left the last pre-vote
 		// Or maximum 3 rounds backward
 		const minPreVoteHeight = Math.max(
-			heightSinceDelegateActive,
+			delegateMinHeightActive,
 			header.maxHeightPreviouslyForged + 1,
 			delegateState.maxPreVoteHeight + 1,
 			header.height - this.processingThreshold,

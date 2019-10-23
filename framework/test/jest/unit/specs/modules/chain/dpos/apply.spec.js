@@ -495,7 +495,7 @@ describe('dpos.apply()', () => {
 			);
 		});
 
-		it('should delete RoundDelegates entitries older than (finalizedBlockRound - 2)', async () => {
+		it('should delete RoundDelegates entities older than (finalizedBlockRound - 2)', async () => {
 			// Arrange
 			const finalizedBlockRoundStub = 5;
 			const bftRoundOffset = 2; // TODO: get from BFT constants
