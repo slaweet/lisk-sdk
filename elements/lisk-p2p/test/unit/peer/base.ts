@@ -51,6 +51,7 @@ describe('peer/base', () => {
 	let p2pDiscoveredPeerInfo: P2PPeerInfo;
 	let defaultPeer: Peer;
 	let clock: sinon.SinonFakeTimers;
+	let fetchandDisconnectPeer: Peer;
 
 	beforeEach(() => {
 		clock = sandbox.useFakeTimers();
@@ -100,6 +101,10 @@ describe('peer/base', () => {
 			internalState: undefined,
 		};
 		defaultPeer = new Peer(defaultPeerInfo, peerConfig);
+		fetchandDisconnectPeer = new Peer(defaultPeerInfo, {
+			fecthAndDisconnect: true,
+			...peerConfig,
+		});
 	});
 
 	afterEach(() => {
@@ -491,18 +496,41 @@ describe('peer/base', () => {
 					},
 				},
 			];
+
 			sandbox.stub(defaultPeer, 'fetchPeers').resolves(discoveredPeers);
+			sandbox.stub(defaultPeer, 'disconnect').resolves();
 			sandbox.stub(defaultPeer, 'emit');
+			sandbox
+				.stub(fetchandDisconnectPeer, 'fetchPeers')
+				.resolves(discoveredPeers);
+			sandbox.stub(fetchandDisconnectPeer, 'disconnect').resolves();
+			sandbox.stub(fetchandDisconnectPeer, 'emit');
 		});
 
 		it('should call fetchPeers', async () => {
 			await defaultPeer.discoverPeers();
 			expect(defaultPeer.fetchPeers).to.be.calledOnce;
+
+			await fetchandDisconnectPeer.discoverPeers();
+			expect(fetchandDisconnectPeer.fetchPeers).to.be.calledOnce;
+		});
+
+		it('should not call disconnect', async () => {
+			await defaultPeer.discoverPeers();
+			expect(defaultPeer.disconnect).not.be.called;
+		});
+
+		it('should call disconnect', async () => {
+			await fetchandDisconnectPeer.discoverPeers();
+			expect(fetchandDisconnectPeer.disconnect).to.be.calledOnce;
 		});
 
 		it(`should emit ${EVENT_DISCOVERED_PEER} event 2 times`, async () => {
 			await defaultPeer.discoverPeers();
 			expect(defaultPeer.emit).to.be.calledTwice;
+
+			await fetchandDisconnectPeer.discoverPeers();
+			expect(fetchandDisconnectPeer.emit).to.be.calledTwice;
 		});
 
 		it(`should emit ${EVENT_DISCOVERED_PEER} event with every peer info`, async () => {
@@ -519,6 +547,9 @@ describe('peer/base', () => {
 		it(`should return discoveredPeerInfoList`, async () => {
 			const discoveredPeerInfoList = await defaultPeer.discoverPeers();
 			expect(discoveredPeerInfoList).to.be.eql(discoveredPeers);
+
+			const fetchandDisconnectPeer = await defaultPeer.discoverPeers();
+			expect(fetchandDisconnectPeer).to.be.eql(discoveredPeers);
 		});
 	});
 

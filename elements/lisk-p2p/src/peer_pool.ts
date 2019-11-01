@@ -396,6 +396,10 @@ export class PeerPool extends EventEmitter {
 		peer.send(message);
 	}
 
+	public fetchStatusAndDisconnect(peerInfo: P2PPeerInfo): void {
+		this._addOutboundPeer(peerInfo, true);
+	}
+
 	public triggerNewConnections(
 		newPeers: ReadonlyArray<P2PPeerInfo>,
 		triedPeers: ReadonlyArray<P2PPeerInfo>,
@@ -429,7 +433,9 @@ export class PeerPool extends EventEmitter {
 		});
 
 		[...peersToConnect, ...disconnectedFixedPeers].forEach(
-			(peerInfo: P2PPeerInfo) => this._addOutboundPeer(peerInfo),
+			(peerInfo: P2PPeerInfo) => {
+				this._addOutboundPeer(peerInfo, false);
+			},
 		);
 	}
 
@@ -456,7 +462,10 @@ export class PeerPool extends EventEmitter {
 		return peer;
 	}
 
-	private _addOutboundPeer(peerInfo: P2PPeerInfo): boolean {
+	private _addOutboundPeer(
+		peerInfo: P2PPeerInfo,
+		fetchStatusAndDisconnect: boolean = false,
+	): boolean {
 		if (this.hasPeer(peerInfo.peerId)) {
 			return false;
 		}
@@ -471,7 +480,10 @@ export class PeerPool extends EventEmitter {
 			return false;
 		}
 
-		const peer = new OutboundPeer(peerInfo, { ...this._peerConfig });
+		const peer = new OutboundPeer(peerInfo, {
+			...this._peerConfig,
+			...{ fetchStatusAndDisconnect },
+		});
 
 		this._peerMap.set(peer.id, peer);
 		this._bindHandlersToPeer(peer);

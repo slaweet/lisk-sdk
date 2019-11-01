@@ -101,6 +101,7 @@ export interface PeerConfig {
 	readonly wsMaxPayload?: number;
 	readonly maxPeerInfoSize: number;
 	readonly maxPeerDiscoveryResponseLength: number;
+	readonly fecthAndDisconnect?: boolean;
 	readonly secret: number;
 }
 
@@ -118,6 +119,7 @@ export class Peer extends EventEmitter {
 		responseRate: number;
 		lastResponded: number;
 	};
+	protected _fecthAndDisconnect: boolean;
 	private _rpcCounter: Map<string, number>;
 	private _rpcRates: Map<string, number>;
 	private _messageCounter: Map<string, number>;
@@ -163,7 +165,10 @@ export class Peer extends EventEmitter {
 			this._resetProductivity();
 		}, DEFAULT_PRODUCTIVITY_RESET_INTERVAL);
 		this._productivity = { ...DEFAULT_PRODUCTIVITY };
-
+		this._fecthAndDisconnect =
+			typeof this._peerConfig.fecthAndDisconnect === 'boolean'
+				? this._peerConfig.fecthAndDisconnect
+				: false;
 		// This needs to be an arrow function so that it can be used as a listener.
 		this._handleRawRPC = (
 			packet: unknown,
@@ -423,6 +428,10 @@ export class Peer extends EventEmitter {
 		discoveredPeerInfoList.forEach(peerInfo => {
 			this.emit(EVENT_DISCOVERED_PEER, peerInfo);
 		});
+
+		if (this._fecthAndDisconnect) {
+			this.disconnect();
+		}
 
 		return discoveredPeerInfoList;
 	}
