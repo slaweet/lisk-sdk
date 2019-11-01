@@ -21,6 +21,7 @@ import * as url from 'url';
 import {
 	ConnectionKind,
 	DEFAULT_BAN_TIME,
+	DEFAULT_FETCH_TRUSTED_PEER_COEFF,
 	DEFAULT_MAX_INBOUND_CONNECTIONS,
 	DEFAULT_MAX_OUTBOUND_CONNECTIONS,
 	DEFAULT_MAX_PEER_DISCOVERY_RESPONSE_LENGTH,
@@ -94,6 +95,7 @@ import {
 	PeerLists,
 	ProtocolPeerInfo,
 } from './p2p_types';
+import { OutboundPeer } from './peer';
 import { PeerBook } from './peer_book';
 import { PeerPool, PeerPoolConfig } from './peer_pool';
 import {
@@ -197,6 +199,7 @@ export class P2P extends EventEmitter {
 	private readonly _peerBook: PeerBook;
 	private readonly _bannedPeers: Set<string>;
 	private readonly _populatorInterval: number;
+	private _nextFetchTrustedPeer: number;
 	private _populatorIntervalId: NodeJS.Timer | undefined;
 	private _nodeInfo: P2PNodeInfo;
 	private readonly _peerPool: PeerPool;
@@ -514,6 +517,8 @@ export class P2P extends EventEmitter {
 		this._populatorInterval = config.populatorInterval
 			? config.populatorInterval
 			: DEFAULT_POPULATOR_INTERVAL;
+
+		this._nextFetchTrustedPeer = this._setNextFetchTrustedPeer();
 
 		this._peerHandshakeCheck = config.peerHandshakeCheck
 			? config.peerHandshakeCheck
@@ -875,12 +880,39 @@ export class P2P extends EventEmitter {
 				this._peerBook.triedPeers,
 				this._sanitizedPeerLists.fixedPeers || [],
 			);
+
+			if (Date.now() > this._nextFetchTrustedPeer) {
+				this._setNextFetchTrustedPeer();
+				this._fetchTrustedPeerList();
+			}
 		}, this._populatorInterval);
+
 		this._peerPool.triggerNewConnections(
 			this._peerBook.newPeers,
 			this._peerBook.triedPeers,
 			this._sanitizedPeerLists.fixedPeers || [],
 		);
+	}
+
+	private _fetchTrustedPeerList(): void {
+		// Check we have less Outbound connection than expected
+		if (
+			this._peerPool.getConnectedPeers(OutboundPeer).length <
+			this._config.maxOutboundConnections
+		) {
+			const trustedPeers = shuffle(this._getTrustedPeers());
+			const triedPeers = shuffle(this._peerBook.triedPeers);
+
+			if (trustedPeers.length > 0) {
+				setImmediate(async () => {
+					await this._peerPool.fetchStatusAndDisconnect(trustedPeers[0]);
+				});
+			} else if (triedPeers.length > 0) {
+				setImmediate(async () => {
+					await this._peerPool.fetchStatusAndDisconnect(triedPeers[0]);
+				});
+			}
+		}
 	}
 
 	private _stopPopulator(): void {
@@ -897,6 +929,11 @@ export class P2P extends EventEmitter {
 		}
 
 		return false;
+	}
+
+	private _setNextFetchTrustedPeer(): number {
+		return (this._nextFetchTrustedPeer =
+			Date.now() + this._populatorInterval * DEFAULT_FETCH_TRUSTED_PEER_COEFF);
 	}
 
 	private _handleGetPeersRequest(request: P2PRequest): void {
@@ -956,6 +993,14 @@ export class P2P extends EventEmitter {
 		);
 
 		return !!isSeed || !!isWhitelisted || !!isFixed;
+	}
+
+	private _getTrustedPeers(): ReadonlyArray<P2PPeerInfo> {
+		return [
+			...this._sanitizedPeerLists.seedPeers,
+			...this._sanitizedPeerLists.whitelisted,
+			...this._sanitizedPeerLists.fixedPeers,
+		];
 	}
 
 	public async start(): Promise<void> {

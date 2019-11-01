@@ -396,8 +396,22 @@ export class PeerPool extends EventEmitter {
 		peer.send(message);
 	}
 
-	public fetchStatusAndDisconnect(peerInfo: P2PPeerInfo): void {
-		this._addOutboundPeer(peerInfo, true);
+	public async fetchStatusAndDisconnect(peerInfo: P2PPeerInfo): Promise<void> {
+		const getConnectedPeer = this.getConnectedPeers().find(
+			peer => peer.peerInfo.peerId === peerInfo.peerId,
+		);
+
+		if (getConnectedPeer) {
+			try {
+				await getConnectedPeer.discoverPeers();
+			} catch (err) {
+				throw new Error(
+					`DiscoverPeers from ${peerInfo.peerId} was not successful`,
+				);
+			}
+		} else {
+			this._addOutboundPeer(peerInfo, true);
+		}
 	}
 
 	public triggerNewConnections(
