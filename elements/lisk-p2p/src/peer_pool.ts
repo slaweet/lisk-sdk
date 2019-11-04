@@ -405,12 +405,12 @@ export class PeerPool extends EventEmitter {
 			try {
 				await getConnectedPeer.discoverPeers();
 			} catch (err) {
-				throw new Error(
-					`DiscoverPeers from ${peerInfo.peerId} was not successful`,
-				);
+				throw err as Error;
 			}
 		} else {
-			this._addOutboundPeer(peerInfo, true);
+			this._addOutboundPeer(peerInfo, {
+				fetchStatusAndDisconnect: true,
+			});
 		}
 	}
 
@@ -448,7 +448,9 @@ export class PeerPool extends EventEmitter {
 
 		[...peersToConnect, ...disconnectedFixedPeers].forEach(
 			(peerInfo: P2PPeerInfo) => {
-				this._addOutboundPeer(peerInfo, false);
+				this._addOutboundPeer(peerInfo, {
+					fetchStatusAndDisconnect: false,
+				});
 			},
 		);
 	}
@@ -478,7 +480,7 @@ export class PeerPool extends EventEmitter {
 
 	private _addOutboundPeer(
 		peerInfo: P2PPeerInfo,
-		fetchStatusAndDisconnect: boolean = false,
+		customPeerConfig?: object,
 	): boolean {
 		if (this.hasPeer(peerInfo.peerId)) {
 			return false;
@@ -496,7 +498,7 @@ export class PeerPool extends EventEmitter {
 
 		const peer = new OutboundPeer(peerInfo, {
 			...this._peerConfig,
-			...{ fetchStatusAndDisconnect },
+			...customPeerConfig,
 		});
 
 		this._peerMap.set(peer.id, peer);

@@ -423,17 +423,19 @@ export class Peer extends EventEmitter {
 		}
 	}
 
-	public async discoverPeers(): Promise<ReadonlyArray<P2PPeerInfo>> {
-		const discoveredPeerInfoList = await this.fetchPeers();
-		discoveredPeerInfoList.forEach(peerInfo => {
-			this.emit(EVENT_DISCOVERED_PEER, peerInfo);
-		});
-
-		if (this._fecthAndDisconnect) {
-			this.disconnect();
+	public async discoverPeers(): Promise<void> {
+		try {
+			const discoveredPeerInfoList = await this.fetchPeers();
+			discoveredPeerInfoList.forEach(peerInfo => {
+				this.emit(EVENT_DISCOVERED_PEER, peerInfo);
+			});
+		} catch (error) {
+			throw error as RPCResponseError;
+		} finally {
+			if (this._fecthAndDisconnect) {
+				this.disconnect();
+			}
 		}
-
-		return discoveredPeerInfoList;
 	}
 
 	public async fetchStatus(): Promise<P2PPeerInfo> {

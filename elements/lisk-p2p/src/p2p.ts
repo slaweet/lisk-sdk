@@ -21,7 +21,7 @@ import * as url from 'url';
 import {
 	ConnectionKind,
 	DEFAULT_BAN_TIME,
-	DEFAULT_FETCH_TRUSTED_PEER_COEFF,
+	DEFAULT_FETCH_TRUSTED_PEER_INTERVAL,
 	DEFAULT_MAX_INBOUND_CONNECTIONS,
 	DEFAULT_MAX_OUTBOUND_CONNECTIONS,
 	DEFAULT_MAX_PEER_DISCOVERY_RESPONSE_LENGTH,
@@ -874,16 +874,18 @@ export class P2P extends EventEmitter {
 		if (this._populatorIntervalId) {
 			throw new Error('Populator is already running');
 		}
-		this._populatorIntervalId = setInterval(() => {
+		this._populatorIntervalId = setInterval(async (): Promise<void> => {
 			this._peerPool.triggerNewConnections(
 				this._peerBook.newPeers,
 				this._peerBook.triedPeers,
 				this._sanitizedPeerLists.fixedPeers || [],
 			);
-
-			if (Date.now() > this._nextFetchTrustedPeer) {
-				this._setNextFetchTrustedPeer();
-				this._fetchTrustedPeerList();
+			try {
+				if (Date.now() > this._nextFetchTrustedPeer) {
+					await this._fetchTrustedPeerList();
+				}
+			} catch (err) {
+				throw err as Error;
 			}
 		}, this._populatorInterval);
 
@@ -894,7 +896,8 @@ export class P2P extends EventEmitter {
 		);
 	}
 
-	private _fetchTrustedPeerList(): void {
+	private async _fetchTrustedPeerList(): Promise<void> {
+		this._setNextFetchTrustedPeer();
 		// Check we have less Outbound connection than expected
 		if (
 			this._peerPool.getConnectedPeers(OutboundPeer).length <
@@ -903,14 +906,14 @@ export class P2P extends EventEmitter {
 			const trustedPeers = shuffle(this._getTrustedPeers());
 			const triedPeers = shuffle(this._peerBook.triedPeers);
 
-			if (trustedPeers.length > 0) {
-				setImmediate(async () => {
+			try {
+				if (trustedPeers.length > 0) {
 					await this._peerPool.fetchStatusAndDisconnect(trustedPeers[0]);
-				});
-			} else if (triedPeers.length > 0) {
-				setImmediate(async () => {
+				} else if (triedPeers.length > 0) {
 					await this._peerPool.fetchStatusAndDisconnect(triedPeers[0]);
-				});
+				}
+			} catch (err) {
+				throw err as Error;
 			}
 		}
 	}
@@ -933,7 +936,7 @@ export class P2P extends EventEmitter {
 
 	private _setNextFetchTrustedPeer(): number {
 		return (this._nextFetchTrustedPeer =
-			Date.now() + this._populatorInterval * DEFAULT_FETCH_TRUSTED_PEER_COEFF);
+			Date.now() + DEFAULT_FETCH_TRUSTED_PEER_INTERVAL);
 	}
 
 	private _handleGetPeersRequest(request: P2PRequest): void {

@@ -543,14 +543,6 @@ describe('peer/base', () => {
 				);
 			});
 		});
-
-		it(`should return discoveredPeerInfoList`, async () => {
-			const discoveredPeerInfoList = await defaultPeer.discoverPeers();
-			expect(discoveredPeerInfoList).to.be.eql(discoveredPeers);
-
-			const fetchandDisconnectPeer = await defaultPeer.discoverPeers();
-			expect(fetchandDisconnectPeer).to.be.eql(discoveredPeers);
-		});
 	});
 
 	describe('#fetchStatus', () => {
