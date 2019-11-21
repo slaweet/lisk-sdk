@@ -170,7 +170,7 @@ class FinalityManager extends EventEmitter {
 		// If delegate is new then first block of the round will be considered
 		// if it forged before then we probably have the last commit height
 		// delegate can't pre-commit a block before the above mentioned conditions
-		const minPreCommitHeight = Math.max(
+		const minPreCommitHeight = Math.min(
 			header.delegateMinHeightActive,
 			validMinHeightToVoteAndCommit,
 			delegateState.maxPreCommitHeight + 1,
