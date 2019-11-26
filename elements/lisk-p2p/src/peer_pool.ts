@@ -20,7 +20,6 @@
 import { EventEmitter } from 'events';
 // tslint:disable-next-line no-require-imports
 import shuffle = require('lodash.shuffle');
-import { SCServerSocket } from 'socketcluster-server';
 
 import {
 	ConnectionKind,
@@ -73,6 +72,7 @@ import {
 	Peer,
 	PeerConfig,
 } from './peer';
+import { ServerSocket } from './server/server_socket';
 
 interface FilterPeersOptions {
 	readonly category: PROTECTION_CATEGORY;
@@ -451,13 +451,15 @@ export class PeerPool extends EventEmitter {
 			peerLimit,
 		});
 
-		[...peersToConnect, ...disconnectedFixedPeers].forEach(
-			(peerInfo: P2PPeerInfo) =>
-				this._addOutboundPeer(peerInfo, this._nodeInfo as P2PNodeInfo),
+		[
+			...peersToConnect,
+			...disconnectedFixedPeers,
+		].forEach((peerInfo: P2PPeerInfo) =>
+			this._addOutboundPeer(peerInfo, this._nodeInfo as P2PNodeInfo),
 		);
 	}
 
-	public addInboundPeer(peerInfo: P2PPeerInfo, socket: SCServerSocket): Peer {
+	public addInboundPeer(peerInfo: P2PPeerInfo, socket: ServerSocket): Peer {
 		const inboundPeers = this.getPeers(InboundPeer);
 		if (inboundPeers.length >= this._maxInboundConnections) {
 			this._evictPeer(InboundPeer);

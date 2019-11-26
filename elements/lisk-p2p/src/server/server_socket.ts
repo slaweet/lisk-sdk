@@ -16,19 +16,20 @@
 import { EventEmitter } from 'events';
 
 import { MasterServer } from './master_server';
+import { SocketInfo } from './type';
 
-export interface SocketInfo {
-	readonly id: string;
-	readonly ipAddress: string;
-	readonly wsPort: number;
-}
+type States = 'connecting' | 'open' | 'closed';
 
 export class ServerSocket extends EventEmitter {
 	private readonly _id: string;
 	private readonly _ipAddress: string;
 	private readonly _wsPort: number;
+	private readonly _info: SocketInfo;
 	private readonly _workerId: number;
 	private readonly _masterServer: MasterServer;
+	public readonly state: States;
+	public readonly OPEN = 'open';
+	public readonly CLOSED = 'closed';
 
 	public constructor(
 		masterServer: MasterServer,
@@ -36,11 +37,13 @@ export class ServerSocket extends EventEmitter {
 		socketInfo: SocketInfo,
 	) {
 		super();
+		this.state = 'open';
 		this._workerId = workerId;
 		this._id = socketInfo.id;
 		this._ipAddress = socketInfo.ipAddress;
 		this._wsPort = socketInfo.wsPort;
 		this._masterServer = masterServer;
+		this._info = socketInfo;
 	}
 
 	public get id(): string {
@@ -53,5 +56,22 @@ export class ServerSocket extends EventEmitter {
 
 	public get ipAddress(): string {
 		return this._ipAddress;
+	}
+
+	public get info(): SocketInfo {
+		return this._info;
+	}
+
+	public destroy(statusCode: number, reason: string | undefined): void {
+		this._masterServer.disconnect(
+			this._workerId,
+			this._id,
+			statusCode,
+			reason || 'Unknown reason',
+		);
+	}
+
+	public disconnect(statusCode: number, reason: string): void {
+		this._masterServer.disconnect(this._workerId, this._id, statusCode, reason);
 	}
 }

@@ -15,6 +15,14 @@
 
 export type ProcessCallback = (err: Error | undefined, data: object) => void;
 
+export interface SocketInfo {
+	readonly id: string;
+	readonly ipAddress: string;
+	readonly wsPort: number;
+	readonly protocolVersion: string;
+	readonly advertiseAddress: boolean;
+}
+
 export interface ProcessMessage<T> {
 	readonly type: string;
 	readonly data?: T;
@@ -30,5 +38,7 @@ export interface NodeConfig {
 	readonly protocolVersion: string;
 	readonly nonce: string;
 	readonly nethash: string;
+	readonly maxPeerInfoSize?: number;
 	readonly bannedPeers: ReadonlyArray<string>;
+	readonly blacklistedPeers: ReadonlyArray<string>;
 }

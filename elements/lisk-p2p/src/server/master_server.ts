@@ -16,12 +16,19 @@ import { EventEmitter } from 'events';
 
 import * as SocketCluster from 'socketcluster';
 
-import { ProcessCallback, ProcessMessage, NodeConfig, WorkerMessage } from './type';
+import {
+	ProcessCallback,
+	ProcessMessage,
+	NodeConfig,
+	WorkerMessage,
+	SocketInfo,
+} from './type';
 import { REQUEST_NODE_CONFIG, REQUEST_SOCKET_CONNECTION } from './constants';
-import { ServerSocket, SocketInfo } from './server_socket';
+import { ServerSocket } from './server_socket';
 
 interface MasterConfig {
 	readonly wsPort: number;
+	readonly maxPayload: number;
 	readonly workers: number;
 	readonly path: string;
 	// tslint:disable-next-line no-magic-numbers
@@ -33,50 +40,95 @@ export class MasterServer extends EventEmitter {
 	private readonly _nodeConfig: NodeConfig;
 	private readonly _server: SocketCluster;
 	private _socketMap: Map<string, ServerSocket>;
+	public isReady: boolean;
 
 	public constructor(config: MasterConfig, nodeConfig: NodeConfig) {
 		super();
 		this._config = config;
 		this._nodeConfig = nodeConfig;
 		this._socketMap = new Map();
+		this.isReady = false;
 
 		this._server = new SocketCluster({
+			maxPayload: config.maxPayload,
 			port: config.wsPort,
 			path: config.path,
 			workers: config.workers ?? 1,
 			logLevel: config.logLevel ?? 0,
 		});
-		this._server.on('workerMessage' as any, ((workerId: number, req: WorkerMessage, callback: ProcessCallback) => {
-			if (req.type === REQUEST_NODE_CONFIG) {
-				callback(undefined, this._nodeConfig);
-
-				return;
-			}
-			if (req.type === REQUEST_SOCKET_CONNECTION) {
-				const socket = new ServerSocket(this, workerId, req.data as SocketInfo);
-				this._socketMap.set(req.id, socket);
-				this.emit('connection', socket);
-			}
-			// Find a related socket and emit event
-			const existingSocket = this._socketMap.get(req.id);
-			existingSocket?.emit(req.type, req.data, callback);
-		}) as any);
-	}
-
-	public async sendToWorker<T, K>(workerId: number, data: ProcessMessage<T>): Promise<ProcessMessage<K>> {
-		return this._sendToWorker<T, K>(workerId, data);
-	}
-
-	private async _sendToWorker<T, K>(workerId: number, data: ProcessMessage<T>): Promise<ProcessMessage<K>> {
-		return new Promise((resolve, reject) => {
-			this._server.sendToWorker(workerId, data, (err: Error, resp: ProcessMessage<K>) => {
-				if (err) {
-					reject(err);
+		this._server.on('ready', () => {
+			this.isReady = true;
+			this.emit('ready');
+		});
+		this._server.on(
+			'workerMessage' as any,
+			((workerId: number, req: WorkerMessage, callback: ProcessCallback) => {
+				if (req.type === REQUEST_NODE_CONFIG) {
+					callback(undefined, this._nodeConfig);
 
 					return;
 				}
-				resolve(resp);
-			});
+				if (req.type === REQUEST_SOCKET_CONNECTION) {
+					const socket = new ServerSocket(
+						this,
+						workerId,
+						req.data as SocketInfo,
+					);
+					this._socketMap.set(req.id, socket);
+					this.emit('connection', socket);
+				}
+				// Find a related socket and emit event
+				const existingSocket = this._socketMap.get(req.id);
+				existingSocket?.emit(req.type, req.data, callback);
+			}) as any,
+		);
+	}
+
+	public async close(): Promise<void> {
+		return new Promise(resolve => {
+			this._server.destroy(resolve);
+		});
+	}
+
+	public disconnect(
+		workerId: number,
+		id: string,
+		statusCode: number,
+		reason: string,
+	): void {
+		this._socketMap.delete(id);
+		this.sendToWorker(workerId, {
+			type: 'disconnect',
+			data: { id, statusCode, reason },
+		}).catch(() => {
+			// Ignore error
+		});
+	}
+
+	public async sendToWorker<T, K>(
+		workerId: number,
+		data: ProcessMessage<T>,
+	): Promise<ProcessMessage<K>> {
+		return this._sendToWorker<T, K>(workerId, data);
+	}
+
+	private async _sendToWorker<T, K>(
+		workerId: number,
+		data: ProcessMessage<T>,
+	): Promise<ProcessMessage<K>> {
+		return new Promise((resolve, reject) => {
+			this._server.sendToWorker(
+				workerId,
+				data,
+				(err: Error, resp: ProcessMessage<K>) => {
+					if (err) {
+						reject(err);
+
+						return;
+					}
+					resolve(resp);
+				},
+			);
 		});
 	}
 }

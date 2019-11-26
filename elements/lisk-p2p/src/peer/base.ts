@@ -65,6 +65,7 @@ import {
 	validateProtocolMessage,
 	validateRPCRequest,
 } from '../utils';
+import { ServerSocket } from '../server/server_socket';
 
 export const socketErrorStatusCodes = {
 	...(socketClusterClient.SCClientSocket as any).errorStatuses,
@@ -142,7 +143,7 @@ export class Peer extends EventEmitter {
 	) => void;
 	protected readonly _handleWSMessage: (message: string) => void;
 	protected readonly _handleRawMessage: (packet: unknown) => void;
-	protected _socket: SCServerSocketUpdated | SCClientSocket | undefined;
+	protected _socket: ServerSocket | SCClientSocket | undefined;
 
 	public constructor(peerInfo: P2PPeerInfo, peerConfig: PeerConfig) {
 		super();
