@@ -36,7 +36,7 @@ interface MasterConfig {
 }
 
 export class MasterServer extends EventEmitter {
-	private readonly _config: MasterConfig;
+	// private readonly _config: MasterConfig;
 	private readonly _nodeConfig: NodeConfig;
 	private readonly _server: SocketCluster;
 	private _socketMap: Map<string, ServerSocket>;
@@ -44,12 +44,12 @@ export class MasterServer extends EventEmitter {
 
 	public constructor(config: MasterConfig, nodeConfig: NodeConfig) {
 		super();
-		this._config = config;
 		this._nodeConfig = nodeConfig;
 		this._socketMap = new Map();
 		this.isReady = false;
 
 		this._server = new SocketCluster({
+			workerController: `${__dirname}/worker`,
 			maxPayload: config.maxPayload,
 			port: config.wsPort,
 			path: config.path,
