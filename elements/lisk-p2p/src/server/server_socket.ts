@@ -62,6 +62,15 @@ export class ServerSocket extends EventEmitter {
 		return this._info;
 	}
 
+	public emit(event: string, ...args: any[]): boolean {
+		super.emit(event, args);
+		this._masterServer
+			.sendToWorker(this._workerId, { type: event, data: { ...args } })
+			.catch();
+
+		return true;
+	}
+
 	public destroy(statusCode: number, reason: string | undefined): void {
 		this._masterServer.disconnect(
 			this._workerId,

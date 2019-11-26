@@ -42,6 +42,7 @@ import {
 
 import { REQUEST_NODE_CONFIG } from './constants';
 import { NodeConfig, ProcessMessage, SocketInfo } from './type';
+import { P2PPeerInfo } from '../p2p_types';
 
 const BASE_10_RADIX = 10;
 
@@ -90,6 +91,10 @@ class Worker extends SCWorker {
 		});
 
 		this.scServer.on('connection', async (socket: SCServerSocket) => {
+			if (this._nodeConfig === undefined) {
+				throw new Error('Node config has to be set');
+			}
+			console.log('im here');
 			if (!socket.request.url) {
 				this._disconnectSocketDueToFailedHandshake(
 					socket,
@@ -101,7 +106,7 @@ class Worker extends SCWorker {
 			}
 			const queryObject = url.parse(socket.request.url, true).query;
 
-			if ((queryObject.nonce as string) === this._nodeConfig?.nonce) {
+			if (queryObject.nonce === this._nodeConfig?.nonce) {
 				this._disconnectSocketDueToFailedHandshake(
 					socket,
 					INVALID_CONNECTION_SELF_CODE,
@@ -114,7 +119,8 @@ class Worker extends SCWorker {
 			if (
 				typeof queryObject.wsPort !== 'string' ||
 				typeof queryObject.protocolVersion !== 'string' ||
-				typeof queryObject.nethash !== 'string'
+				typeof queryObject.nethash !== 'string' ||
+				typeof queryObject.nonce !== 'string'
 			) {
 				this._disconnectSocketDueToFailedHandshake(
 					socket,
@@ -132,17 +138,23 @@ class Worker extends SCWorker {
 			const {
 				// wsPort,
 				// ipAddress,
+				nonce,
 				nethash,
 				advertiseAddress,
 			} = queryObject;
 
-			const incomingPeerInfo = {
+			const incomingPeerInfo: P2PPeerInfo = {
+				sharedState: {
+					protocolVersion: queryObject.protocolVersion,
+					nethash,
+					nonce,
+				},
+				internalState: {
+					advertiseAddress: advertiseAddress !== 'false',
+				},
 				peerId,
 				ipAddress: socket.remoteAddress,
 				wsPort: remoteWSPort,
-				nethash,
-				protocolVersion: queryObject.protocolVersion,
-				advertiseAddress: advertiseAddress !== 'false',
 			};
 
 			try {
@@ -158,10 +170,13 @@ class Worker extends SCWorker {
 				);
 			}
 
-			const { success, error } = validatePeerCompatibility(
-				incomingPeerInfo,
-				this._nodeInfo,
-			);
+			const { success, error } = validatePeerCompatibility(incomingPeerInfo, {
+				nethash: this._nodeConfig.nethash,
+				nonce: this._nodeConfig.nonce,
+				advertiseAddress: this._nodeConfig.advertiseAddress,
+				wsPort: this._nodeConfig.wsPort,
+				protocolVersion: this._nodeConfig.protocolVersion,
+			});
 
 			if (!success) {
 				const incompatibilityReason = error || INCOMPATIBLE_PEER_UNKNOWN_REASON;
@@ -179,6 +194,8 @@ class Worker extends SCWorker {
 				const socketInfo: SocketInfo = {
 					id: peerId,
 					ipAddress: socket.remoteAddress,
+					nethash,
+					nonce,
 					wsPort: remoteWSPort,
 					protocolVersion: queryObject.protocolVersion,
 					advertiseAddress: advertiseAddress !== 'false',
@@ -188,7 +205,7 @@ class Worker extends SCWorker {
 					data: socketInfo,
 				});
 			} catch (err) {
-				this.log(err);
+				console.error(err);
 			}
 		});
 	}

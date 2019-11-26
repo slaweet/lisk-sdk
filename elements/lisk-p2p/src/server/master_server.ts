@@ -17,11 +17,11 @@ import { EventEmitter } from 'events';
 import * as SocketCluster from 'socketcluster';
 
 import {
+	NodeConfig,
 	ProcessCallback,
 	ProcessMessage,
-	NodeConfig,
-	WorkerMessage,
 	SocketInfo,
+	WorkerMessage,
 } from './type';
 import { REQUEST_NODE_CONFIG, REQUEST_SOCKET_CONNECTION } from './constants';
 import { ServerSocket } from './server_socket';
@@ -51,8 +51,8 @@ export class MasterServer extends EventEmitter {
 		this._server = new SocketCluster({
 			workerController: `${__dirname}/worker`,
 			maxPayload: config.maxPayload,
+			host: '0.0.0.0',
 			port: config.wsPort,
-			path: config.path,
 			workers: config.workers ?? 1,
 			logLevel: config.logLevel ?? 0,
 		});
@@ -63,6 +63,7 @@ export class MasterServer extends EventEmitter {
 		this._server.on(
 			'workerMessage' as any,
 			((workerId: number, req: WorkerMessage, callback: ProcessCallback) => {
+				console.log('message', { workerId, req });
 				if (req.type === REQUEST_NODE_CONFIG) {
 					callback(undefined, this._nodeConfig);
 
@@ -76,6 +77,8 @@ export class MasterServer extends EventEmitter {
 					);
 					this._socketMap.set(req.id, socket);
 					this.emit('connection', socket);
+
+					return;
 				}
 				// Find a related socket and emit event
 				const existingSocket = this._socketMap.get(req.id);

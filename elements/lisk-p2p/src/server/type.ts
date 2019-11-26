@@ -21,6 +21,8 @@ export interface SocketInfo {
 	readonly wsPort: number;
 	readonly protocolVersion: string;
 	readonly advertiseAddress: boolean;
+	readonly nonce: string;
+	readonly nethash: string;
 }
 
 export interface ProcessMessage<T> {
@@ -38,6 +40,8 @@ export interface NodeConfig {
 	readonly protocolVersion: string;
 	readonly nonce: string;
 	readonly nethash: string;
+	readonly wsPort: number;
+	readonly advertiseAddress: boolean;
 	readonly maxPeerInfoSize?: number;
 	readonly bannedPeers: ReadonlyArray<string>;
 	readonly blacklistedPeers: ReadonlyArray<string>;

@@ -179,7 +179,7 @@ export class P2P extends EventEmitter {
 	private _populatorIntervalId: NodeJS.Timer | undefined;
 	private _nodeInfo: P2PNodeInfo;
 	private readonly _peerPool: PeerPool;
-	private readonly _masterServer: MasterServer;
+	private readonly _masterServer?: MasterServer;
 
 	private readonly _handlePeerPoolRPC: (request: P2PRequest) => void;
 	private readonly _handlePeerPoolMessage: (message: P2PMessagePacket) => void;
@@ -245,22 +245,26 @@ export class P2P extends EventEmitter {
 		});
 		this._initializePeerBook();
 		this._bannedPeers = new Set();
-		this._masterServer = new MasterServer(
-			{
-				path: '/rpc',
-				logLevel: 0,
-				workers: 1,
-				maxPayload: config.wsMaxPayload ?? DEFAULT_WS_MAX_PAYLOAD,
-				wsPort: this._config.nodeInfo.wsPort,
-			},
-			{
-				nethash: this._config.nodeInfo.nethash,
-				nonce: this._config.nodeInfo.nonce,
-				protocolVersion: this._config.nodeInfo.protocolVersion,
-				bannedPeers: [],
-				blacklistedPeers: [],
-			},
-		);
+		if (config.maxInboundConnections !== 0) {
+			this._masterServer = new MasterServer(
+				{
+					path: '/rpc',
+					logLevel: 3,
+					workers: 1,
+					maxPayload: config.wsMaxPayload ?? DEFAULT_WS_MAX_PAYLOAD,
+					wsPort: this._config.nodeInfo.wsPort,
+				},
+				{
+					nethash: this._config.nodeInfo.nethash,
+					nonce: this._config.nodeInfo.nonce,
+					protocolVersion: this._config.nodeInfo.protocolVersion,
+					wsPort: this._config.nodeInfo.wsPort,
+					advertiseAddress: this._config.nodeInfo.advertiseAddress,
+					bannedPeers: [],
+					blacklistedPeers: [],
+				},
+			);
+		}
 
 		// This needs to be an arrow function so that it can be used as a listener.
 		this._handlePeerPoolRPC = (request: P2PRequest) => {
@@ -617,7 +621,7 @@ export class P2P extends EventEmitter {
 	}
 
 	private async _startPeerServer(): Promise<void> {
-		this._masterServer.on('connection', (socket: ServerSocket) => {
+		this._masterServer?.on('connection', (socket: ServerSocket) => {
 			const incomingPeerInfo: P2PPeerInfo = {
 				sharedState: {
 					protocolVersion: socket.info.protocolVersion,
@@ -641,11 +645,13 @@ export class P2P extends EventEmitter {
 				);
 			} else {
 				this._peerPool.addInboundPeer(incomingPeerInfo, socket);
+				console.log('new inbound peer', incomingPeerInfo);
 				this.emit(EVENT_NEW_INBOUND_PEER, incomingPeerInfo);
 			}
 
 			try {
 				this._peerBook.addPeer(incomingPeerInfo);
+				console.log('added peer');
 			} catch (error) {
 				if (!(error instanceof ExistingPeerError)) {
 					throw error;
@@ -653,22 +659,27 @@ export class P2P extends EventEmitter {
 			}
 		});
 
-		if (this._masterServer.isReady) {
+		if (this._masterServer?.isReady) {
 			this._isActive = true;
 
 			return;
 		}
 
 		return new Promise<void>(resolve => {
+			this._isActive = true;
+			if (this._masterServer === undefined) {
+				resolve();
+
+				return;
+			}
 			this._masterServer.once('ready', () => {
-				this._isActive = true;
 				resolve();
 			});
 		});
 	}
 
 	private async _stopWSServer(): Promise<void> {
-		return this._masterServer.close();
+		return this._masterServer?.close();
 	}
 
 	private async _stopPeerServer(): Promise<void> {
