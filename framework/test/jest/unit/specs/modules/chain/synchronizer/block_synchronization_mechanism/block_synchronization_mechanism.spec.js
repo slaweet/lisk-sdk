@@ -334,6 +334,8 @@ describe('block_synchronization_mechanism', () => {
 			jest.clearAllMocks();
 			// Independently of the correct execution of the mechanisms, `active` property should be always
 			// set to false upon finishing the execution
+			// @todo discuss this with @dani
+			// eslint-disable-next-line jest/no-standalone-expect
 			expect(blockSynchronizationMechanism.active).toBeFalsy();
 		});
 
@@ -401,22 +403,18 @@ describe('block_synchronization_mechanism', () => {
 							}),
 						);
 
-					try {
-						await blockSynchronizationMechanism.run(aBlock);
-					} catch (err) {
-						expect(err.message).toEqual(
-							'Connected compatible peers list is empty',
-						);
-						expect(
-							blockSynchronizationMechanism._requestAndValidateLastBlock,
-						).not.toHaveBeenCalled();
-						expect(
-							blockSynchronizationMechanism._revertToLastCommonBlock,
-						).not.toHaveBeenCalled();
-						expect(
-							blockSynchronizationMechanism._requestAndApplyBlocksToCurrentChain,
-						).not.toHaveBeenCalled();
-					}
+					await expect(
+						blockSynchronizationMechanism.run(aBlock),
+					).rejects.toThrow('Connected compatible peers list is empty');
+					expect(
+						blockSynchronizationMechanism._requestAndValidateLastBlock,
+					).not.toHaveBeenCalled();
+					expect(
+						blockSynchronizationMechanism._revertToLastCommonBlock,
+					).not.toHaveBeenCalled();
+					expect(
+						blockSynchronizationMechanism._requestAndApplyBlocksToCurrentChain,
+					).not.toHaveBeenCalled();
 				}
 			});
 
@@ -427,20 +425,18 @@ describe('block_synchronization_mechanism', () => {
 					})
 					.mockResolvedValueOnce([]);
 
-				try {
-					await blockSynchronizationMechanism.run(aBlock);
-				} catch (err) {
-					expect(err.message).toEqual('List of connected peers is empty');
-					expect(
-						blockSynchronizationMechanism._requestAndValidateLastBlock,
-					).not.toHaveBeenCalled();
-					expect(
-						blockSynchronizationMechanism._revertToLastCommonBlock,
-					).not.toHaveBeenCalled();
-					expect(
-						blockSynchronizationMechanism._requestAndApplyBlocksToCurrentChain,
-					).not.toHaveBeenCalled();
-				}
+				await expect(blockSynchronizationMechanism.run(aBlock)).rejects.toThrow(
+					'List of connected peers is empty',
+				);
+				expect(
+					blockSynchronizationMechanism._requestAndValidateLastBlock,
+				).not.toHaveBeenCalled();
+				expect(
+					blockSynchronizationMechanism._revertToLastCommonBlock,
+				).not.toHaveBeenCalled();
+				expect(
+					blockSynchronizationMechanism._requestAndApplyBlocksToCurrentChain,
+				).not.toHaveBeenCalled();
 			});
 
 			it('should throw an error if the peer tip does not have priority over current tip', async () => {
@@ -449,27 +445,25 @@ describe('block_synchronization_mechanism', () => {
 						state: PEER_STATE_CONNECTED,
 					})
 					.mockResolvedValueOnce([
-						...peersList.expectedSelection.map(peer => {
-							peer.maxHeightPrevoted = 0;
-							peer.height = 0;
-							return peer;
-						}),
+						...peersList.expectedSelection.map(peer => ({
+							...peer,
+							height: 0,
+							maxHeightPrevoted: 0,
+						})),
 					]);
 
-				try {
-					await blockSynchronizationMechanism.run(aBlock);
-				} catch (err) {
-					expect(err.message).toEqual('Violation of fork choice rule');
-					expect(
-						blockSynchronizationMechanism._requestAndValidateLastBlock,
-					).not.toHaveBeenCalled();
-					expect(
-						blockSynchronizationMechanism._revertToLastCommonBlock,
-					).not.toHaveBeenCalled();
-					expect(
-						blockSynchronizationMechanism._requestAndApplyBlocksToCurrentChain,
-					).not.toHaveBeenCalled();
-				}
+				await expect(blockSynchronizationMechanism.run(aBlock)).rejects.toThrow(
+					'Violation of fork choice rule',
+				);
+				expect(
+					blockSynchronizationMechanism._requestAndValidateLastBlock,
+				).not.toHaveBeenCalled();
+				expect(
+					blockSynchronizationMechanism._revertToLastCommonBlock,
+				).not.toHaveBeenCalled();
+				expect(
+					blockSynchronizationMechanism._requestAndApplyBlocksToCurrentChain,
+				).not.toHaveBeenCalled();
 			});
 		});
 
