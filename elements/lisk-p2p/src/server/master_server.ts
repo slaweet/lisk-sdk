@@ -25,6 +25,7 @@ import {
 } from './type';
 import { REQUEST_NODE_CONFIG, REQUEST_SOCKET_CONNECTION } from './constants';
 import { ServerSocket } from './server_socket';
+import { REMOTE_SC_EVENT_RPC_REQUEST } from '../events';
 
 interface MasterConfig {
 	readonly wsPort: number;
@@ -63,7 +64,6 @@ export class MasterServer extends EventEmitter {
 		this._server.on(
 			'workerMessage' as any,
 			((workerId: number, req: WorkerMessage, callback: ProcessCallback) => {
-				console.log('message', { workerId, req });
 				if (req.type === REQUEST_NODE_CONFIG) {
 					callback(undefined, this._nodeConfig);
 
@@ -82,7 +82,8 @@ export class MasterServer extends EventEmitter {
 				}
 				// Find a related socket and emit event
 				const existingSocket = this._socketMap.get(req.id);
-				existingSocket?.emit(req.type, req.data, callback);
+				console.log('message', { workerId, req });
+				existingSocket?.emitFromWorker(req.type, req.data, req.type === REMOTE_SC_EVENT_RPC_REQUEST ? callback : undefined);
 			}) as any,
 		);
 	}

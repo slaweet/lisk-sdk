@@ -177,6 +177,7 @@ export class Peer extends EventEmitter {
 			packet: unknown,
 			respond: (responseError?: Error, responseData?: unknown) => void,
 		) => {
+			console.log(packet, respond)
 			// TODO later: Switch to LIP protocol format.
 			// tslint:disable-next-line:no-let
 			let rawRequest;

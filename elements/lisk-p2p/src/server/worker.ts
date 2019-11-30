@@ -16,6 +16,7 @@
 // tslint:disable-next-line no-require-imports no-var-requires no-submodule-imports variable-name
 const SCWorker = require('socketcluster/scworker');
 import { SCServerSocket } from 'socketcluster-server';
+import * as socketClusterClient from 'socketcluster-client';
 import * as url from 'url';
 
 import {
@@ -33,18 +34,34 @@ import {
 	INVALID_CONNECTION_URL_REASON,
 } from '../constants';
 import { PeerInboundHandshakeError } from '../errors';
-import { EVENT_FAILED_TO_ADD_INBOUND_PEER } from '../events';
+import {
+	EVENT_FAILED_TO_ADD_INBOUND_PEER,
+	REMOTE_SC_EVENT_RPC_REQUEST,
+	REMOTE_SC_EVENT_MESSAGE,
+	EVENT_CLOSE_INBOUND,
+ } from '../events';
 import {
 	constructPeerId,
 	validatePeerCompatibility,
 	validatePeerInfo,
 } from '../utils';
 
-import { REQUEST_NODE_CONFIG } from './constants';
-import { NodeConfig, ProcessMessage, SocketInfo } from './type';
+import {
+	REQUEST_NODE_CONFIG } from './constants';
+import { NodeConfig, SocketInfo, WorkerMessage } from './type';
 import { P2PPeerInfo } from '../p2p_types';
 
 const BASE_10_RADIX = 10;
+const socketErrorStatusCodes = {
+	...(socketClusterClient.SCClientSocket as any).errorStatuses,
+	1000: 'Intentionally disconnected',
+};
+
+export type SCServerSocketUpdated = {
+	destroy(code?: number, data?: string | object): void;
+	on(event: string | unknown, listener: (packet?: unknown) => void): void;
+	on(event: string, listener: (packet: any, respond: any) => void): void;
+} & SCServerSocket;
 
 class Worker extends SCWorker {
 	private readonly _socketMap: Map<string, SCServerSocket> = new Map();
@@ -52,8 +69,9 @@ class Worker extends SCWorker {
 
 	public async run(): Promise<void> {
 		// Get config from master
-		this._nodeConfig = await this._sendToServer<void, NodeConfig>({
+		this._nodeConfig = await this._sendToServer<NodeConfig>({
 			type: REQUEST_NODE_CONFIG,
+			id: 'worker',
 		});
 
 		this.scServer.on('handshake', (socket: SCServerSocket) => {
@@ -94,7 +112,6 @@ class Worker extends SCWorker {
 			if (this._nodeConfig === undefined) {
 				throw new Error('Node config has to be set');
 			}
-			console.log('im here');
 			if (!socket.request.url) {
 				this._disconnectSocketDueToFailedHandshake(
 					socket,
@@ -200,8 +217,11 @@ class Worker extends SCWorker {
 					protocolVersion: queryObject.protocolVersion,
 					advertiseAddress: advertiseAddress !== 'false',
 				};
-				await this._sendToServer<SocketInfo, void>({
+				this._unbindHandlersFromInboundSocket(socket);
+				this._bindHandlersToInboundSocket(peerId, socket);
+				await this._sendToServer({
 					type: 'connection',
+					id: peerId,
 					data: socketInfo,
 				});
 			} catch (err) {
@@ -226,9 +246,9 @@ class Worker extends SCWorker {
 	 * @param data data massage request as T
 	 * @returns type of K
 	 */
-	private async _sendToServer<T, K>(data: ProcessMessage<T>): Promise<K> {
+	private async _sendToServer<T>(data: WorkerMessage): Promise<T> {
 		return new Promise((resolve, reject) => {
-			this.sendToMaster(data, (err: Error, res: K) => {
+			this.sendToMaster(data, (err: Error, res: T) => {
 				if (err) {
 					reject(err);
 
@@ -237,6 +257,48 @@ class Worker extends SCWorker {
 				resolve(res);
 			});
 		});
+	}
+
+	// All event handlers for the inbound socket should be bound in this method.
+	private _bindHandlersToInboundSocket(id: string, inboundSocket: SCServerSocketUpdated): void {
+		inboundSocket.on('close', (code: number, reasonMessage: string) => {
+			const reason = reasonMessage
+				? reasonMessage
+				: socketErrorStatusCodes[code] || 'Unknown reason';
+			this._sendToServer({ type: EVENT_CLOSE_INBOUND, id, data: { code, reason } }).catch()
+		});
+		inboundSocket.on('error', (error: Error) => {
+			this._sendToServer({ type: 'error', id, data: { error } }).catch();
+		});
+		inboundSocket.on('message', () => {
+			this._sendToServer({ type: 'message', id }).catch();
+		});
+
+		// Bind RPC and remote event handlers
+		inboundSocket.on(REMOTE_SC_EVENT_RPC_REQUEST, (packet: unknown) => {
+			this._sendToServer({ type: REMOTE_SC_EVENT_RPC_REQUEST, id, data: packet }).catch();
+		});
+		inboundSocket.on(REMOTE_SC_EVENT_RPC_REQUEST, async (packet: unknown, respond: (responseError?: Error, responseData?: unknown) => void) => {
+			try {
+				const result = await this._sendToServer({ type: REMOTE_SC_EVENT_RPC_REQUEST, id, data: packet });
+				respond(undefined, result);
+			} catch (error) {
+				respond(error);
+			}
+		});
+		inboundSocket.on(REMOTE_SC_EVENT_MESSAGE, (packet: unknown) => {
+			this._sendToServer({ type: REMOTE_SC_EVENT_MESSAGE, id, data: packet }).catch();
+		});
+	}
+
+	// All event handlers for the inbound socket should be unbound in this method.
+	private _unbindHandlersFromInboundSocket(inboundSocket: SCServerSocketUpdated): void {
+		inboundSocket.off('close');
+		inboundSocket.off('message');
+
+		// Unbind RPC and remote event handlers
+		inboundSocket.off(REMOTE_SC_EVENT_RPC_REQUEST);
+		inboundSocket.off(REMOTE_SC_EVENT_MESSAGE);
 	}
 }
 
